@@ -1,4 +1,5 @@
 import { connectToMongo } from 'config'
+import { userRouter } from './routes'
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
@@ -10,6 +11,8 @@ dotenv.config()
 connectToMongo()
 
 server.use(express.json())
+
+server.use(userRouter)
 
 server.listen(process.env.SERVER_PORT, () => {
   console.log(
