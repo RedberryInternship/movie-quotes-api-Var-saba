@@ -1,5 +1,6 @@
 import { RequestBody, Response } from 'types'
 import { RegisterMemberReq } from './types.d'
+import sgMail from '@sendgrid/mail'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 
@@ -28,6 +29,17 @@ export const registerUser = async (
     const hashedPassword = await bcrypt.hash(password, 12)
 
     await User.create({ name, email, password: hashedPassword })
+
+    if (process.env.SENGRID_API_KEY) {
+      sgMail.setApiKey(process.env.SENGRID_API_KEY)
+
+      await sgMail.send({
+        to: email,
+        from: 'vartasashvili94@gmail.com',
+        subject: 'Account verification',
+        text: 'verification email',
+      })
+    }
 
     return res.status(201).json({ message: 'User registered successfully!' })
   } catch (error: any) {
