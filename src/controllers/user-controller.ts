@@ -26,22 +26,35 @@ export const registerUser = async (
         .json({ message: `User with this credentials is already registered!` })
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12)
-
-    await User.create({ name, email, password: hashedPassword })
-
     if (process.env.SENGRID_API_KEY) {
       sgMail.setApiKey(process.env.SENGRID_API_KEY)
+      await sgMail.send(
+        {
+          to: email,
+          from: 'vartasashvili94@gmail.com',
+          subject: 'Account verification',
+          text: 'verification email',
+        },
+        false,
+        async (err: any) => {
+          if (err) {
+            return res
+              .status(400)
+              .json({ message: 'User registration failed!' })
+          }
 
-      await sgMail.send({
-        to: email,
-        from: 'vartasashvili94@gmail.com',
-        subject: 'Account verification',
-        text: 'verification email',
-      })
+          const hashedPassword = await bcrypt.hash(password, 12)
+          await User.create({ name, email, password: hashedPassword })
+
+          return res.status(201).json({
+            message:
+              'User registered successfully! Account verification link sent.',
+          })
+        }
+      )
     }
 
-    return res.status(201).json({ message: 'User registered successfully!' })
+    return res.status(401).json({ message: 'Sendgrid api key is missing!' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
