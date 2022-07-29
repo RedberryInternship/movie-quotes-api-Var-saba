@@ -1,6 +1,7 @@
 import { RequestBody, Response } from 'types.d'
 import { RegisterMemberReq } from './types.d'
 import sgMail from '@sendgrid/mail'
+import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 
@@ -26,12 +27,14 @@ export const registerUser = async (
     if (process.env.SENGRID_API_KEY) {
       await sgMail.setApiKey(process.env.SENGRID_API_KEY)
 
+      const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET!)
+
       await sgMail.send(
         {
           to: email,
           from: 'vartasashvili94@gmail.com',
           subject: 'Account verification',
-          text: 'verification email',
+          text: `<a href="${process.env.FRONTEND_URI}?emailToConfirm=${email}&token=${emailToken}">Click to Confirm Email</a>`,
         },
         false,
         async (err: any) => {
