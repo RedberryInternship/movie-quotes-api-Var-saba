@@ -1,9 +1,13 @@
-import { RegisterMemberReq, EmailActivationReq } from './types.d'
 import { RequestBody, Response } from 'types.d'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
+import {
+  RegisterGoogleMemberReq,
+  EmailActivationReq,
+  RegisterMemberReq,
+} from './types.d'
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -25,16 +29,16 @@ export const registerUser = async (
     }
 
     if (process.env.SENGRID_API_KEY) {
-      await sgMail.setApiKey(process.env.SENGRID_API_KEY)
+      sgMail.setApiKey(process.env.SENGRID_API_KEY)
 
-      const emailToken = jwt.sign({ email }, process.env.EMAIL_SECRET!)
+      const emailToken = jwt.sign({ email }, process.env.JWT_SECRET!)
 
       await sgMail.send(
         {
           to: email,
           from: 'vartasashvili94@gmail.com',
           subject: 'Account verification',
-          text: `<a href="${process.env.FRONTEND_URI}?emailToConfirm=${email}&token=${emailToken}">Click to Confirm Email</a>`,
+          text: `<a href=${process.env.FRONTEND_URI}?emailToConfirm=${email}&token=${emailToken}>Click to Confirm Email</a>`,
         },
         false,
         async (err: any) => {
@@ -61,6 +65,33 @@ export const registerUser = async (
   }
 }
 
+export const registerUserWithGoogle = async (
+  req: RequestBody<RegisterGoogleMemberReq>,
+  res: Response
+) => {
+  try {
+    const { name, email, image } = req.body
+
+    const existingUser = await User.findOne({ email })
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET!)
+
+    if (!existingUser) {
+      const newUser = await User.create({ name, email, image })
+
+      newUser.verified = true
+
+      await newUser.save()
+    }
+
+    return res.status(200).json({
+      token,
+    })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
 export const userEmailActivation = async (
   req: RequestBody<EmailActivationReq>,
   res: Response
@@ -74,7 +105,7 @@ export const userEmailActivation = async (
       return res.status(404).json({ message: `User is not registered yet!` })
     }
 
-    const verified = jwt.verify(token, process.env.EMAIL_SECRET!)
+    const verified = jwt.verify(token, process.env.JWT_SECRET!)
 
     if (verified) {
       await User.updateOne({ email }, { verified: true })

@@ -8,3 +8,9 @@ export type EmailActivationReq = {
   email: string
   token: string
 }
+
+export type RegisterGoogleMemberReq = {
+  email: string
+  image: string
+  name: string
+}

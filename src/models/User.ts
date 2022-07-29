@@ -25,6 +25,10 @@ const userSchema = new Schema<UserModel>({
   },
 
   password: { type: String },
+
+  image: {
+    type: String,
+  },
 })
 
 const User = mongoose.model('user', userSchema)

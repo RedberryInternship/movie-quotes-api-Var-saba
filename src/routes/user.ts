@@ -1,7 +1,16 @@
-import { passwordSchema, userSchema, emailActivationSchema } from 'schemas'
-import { registerUser, userEmailActivation } from 'controllers'
 import { validateRequestSchema } from 'middlewares'
 import express from 'express'
+import {
+  emailActivationSchema,
+  googleImageSchema,
+  passwordSchema,
+  userSchema,
+} from 'schemas'
+import {
+  registerUserWithGoogle,
+  userEmailActivation,
+  registerUser,
+} from 'controllers'
 
 const router = express.Router()
 
@@ -11,6 +20,14 @@ router.post(
   userSchema,
   validateRequestSchema,
   registerUser
+)
+
+router.post(
+  '/register-user-with-google',
+  userSchema,
+  googleImageSchema,
+  validateRequestSchema,
+  registerUserWithGoogle
 )
 
 router.put(
