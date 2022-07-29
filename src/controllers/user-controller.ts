@@ -4,12 +4,19 @@ import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
+import path from 'path'
+import fs from 'fs'
 import {
   RegisterGoogleMemberReq,
   EmailActivationReq,
   RegisterMemberReq,
   Email,
 } from './types.d'
+
+const emailTemplate = fs.readFileSync(
+  path.join(__dirname, '..', 'views', 'email-template.html'),
+  'utf-8'
+)
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -35,12 +42,21 @@ export const registerUser = async (
 
       const emailToken = jwt.sign({ email }, process.env.JWT_SECRET!)
 
+      let newEmailTemp = emailTemplate
+
+      newEmailTemp = newEmailTemp.replace(
+        /{% uri %}/g,
+        `${process.env.FRONTEND_URI}/?token=${emailToken}`
+      )
+      newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'account')
+      newEmailTemp = newEmailTemp.replace('{% User-Name %}', name)
+
       await sgMail.send(
         {
           to: email,
           from: 'vartasashvili94@gmail.com',
           subject: 'Account verification',
-          text: `<a href=${process.env.FRONTEND_URI}?token=${emailToken}>Click to Confirm Email</a>`,
+          html: newEmailTemp,
         },
         false,
         async (err: any) => {

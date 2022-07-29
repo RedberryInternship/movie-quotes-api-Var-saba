@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <style>
+    @media (max-width: 850px) {
+      .container {
+        padding: 0 35px !important;
+      }
+    }
+  </style>
+
+  <body>
+    <div
+      class="container"
+      style="
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 0 12%;
+        overflow: hidden;
+        height: 100vh;
+        background: linear-gradient(
+          187.16deg,
+          #181623 0.07%,
+          #191725 51.65%,
+          #0d0b14 98.75%
+        );
+      "
+    >
+      <div
+        class="logo"
+        style="
+          padding-top: 78px;
+          display: flex;
+          justify-content: center !important;
+          margin-bottom: 72px;
+        "
+      >
+        <img
+          style="display: block; margin-left: auto; margin-right: auto"
+          src="https://i.postimg.cc/DyQMSvnj/icon.png"
+          alt="movie quotes icon"
+        />
+      </div>
+
+      <p style="margin-bottom: 24px; color: white">Hola {% User-Name %}!</p>
+      <p style="margin-bottom: 24px; color: white; margin-bottom: 35px">
+        Thanks for joining Movie quotes! We really appreciate it. Please click
+        the button below to verify your {% verify-object %}:
+      </p>
+
+      <a
+        style="
+          background-color: #e31221;
+          color: white;
+          text-decoration: none;
+          font-size: 16px;
+          padding: 10px;
+          border-radius: 4px;
+        "
+        href="{% uri %}"
+        >Verify account
+      </a>
+
+      <p style="margin-bottom: 16px; color: white; margin-top: 35px">
+        If clicking doesn't work, you can try copying and pasting it to your
+        browser:
+      </p>
+
+      <a
+        href="{% uri %}"
+        style="
+          cursor: pointer;
+          display: block;
+          margin-bottom: 41px;
+          color: #ddccaa;
+          width: 100%;
+          line-break: anywhere;
+        "
+      >
+        {% uri %}
+      </a>
+
+      <div style="color: white; display: flex">
+        <p style="margin-bottom: 24px; color: white !important">
+          If you have any problems, please contact us:
+          <span style="color: white !important"
+            >support<span style="color: white !important">@</span
+            >moviequotes</span
+          >
+        </p>
+        <p>.ge</p>
+      </div>
+
+      <p style="color: white">MovieQuotes Crew</p>
+    </div>
+  </body>
+</html>
