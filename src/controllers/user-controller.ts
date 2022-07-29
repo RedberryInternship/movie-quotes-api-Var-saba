@@ -1,12 +1,13 @@
 import { RequestBody, Response } from 'types.d'
+import jwt_decode,   from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
   RegisterGoogleMemberReq,
-  EmailActivationReq,
   RegisterMemberReq,
+  RequestQuery,
 } from './types.d'
 
 export const registerUser = async (
@@ -93,26 +94,32 @@ export const registerUserWithGoogle = async (
 }
 
 export const userEmailActivation = async (
-  req: RequestBody<EmailActivationReq>,
+  req: RequestQuery<{token: string}>,
   res: Response
 ) => {
   try {
-    const { email, token } = req.body
+    const { token } = req.query
 
-    const existingUser = await User.findOne({ email })
+    let decodedToken = jwt_decode<{ email: string }>(token)
 
-    if (!existingUser) {
-      return res.status(404).json({ message: `User is not registered yet!` })
-    }
+    if (decodedToken) {
+      let userEmil = decodedToken.email
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET!)
+      const existingUser = await User.findOne({ email: userEmil })
 
-    if (verified) {
-      await User.updateOne({ email }, { verified: true })
+      if (!existingUser) {
+        return res.status(404).json({ message: `User is not registered yet!` })
+      }
 
-      return res.status(200).json({
-        message: 'Account activated successfully!',
-      })
+      const verified = jwt.verify(token, process.env.JWT_SECRET!)
+
+      if (verified) {
+        await User.updateOne({ email: userEmil }, { verified: true })
+
+        return res.status(200).json({
+          message: 'Account activated successfully!',
+        })
+      }
     }
 
     return res.status(401).json({ message: 'Token is not valid' })

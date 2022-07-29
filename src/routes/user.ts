@@ -1,10 +1,5 @@
+import { googleUserSchema, passwordSchema, userSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
-import {
-  emailActivationSchema,
-  googleUserSchema,
-  passwordSchema,
-  userSchema,
-} from 'schemas'
 import express from 'express'
 import {
   registerUserWithGoogle,
@@ -29,11 +24,6 @@ router.post(
   registerUserWithGoogle
 )
 
-router.put(
-  '/activate-account',
-  emailActivationSchema,
-  validateRequestSchema,
-  userEmailActivation
-)
+router.get('/activate-account', userEmailActivation)
 
 export default router
