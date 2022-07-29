@@ -23,7 +23,7 @@ router.post(
 )
 
 router.post(
-  '/register-user-with-google',
+  '/register-google-user',
   userSchema,
   googleImageSchema,
   validateRequestSchema,
