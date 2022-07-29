@@ -1,4 +1,4 @@
-import { RequestBody, Response } from 'types'
+import { RequestBody, Response } from 'types.d'
 import { RegisterMemberReq } from './types.d'
 import sgMail from '@sendgrid/mail'
 import { User } from 'models'
@@ -17,17 +17,15 @@ export const registerUser = async (
         .json({ message: 'Credentials should include lowercase characters!' })
     }
 
-    const existingName = await User.findOne({ name })
-    const existingEmail = await User.findOne({ email })
+    const existingUser = await User.findOne({ email })
 
-    if (existingName || existingEmail) {
-      return res
-        .status(409)
-        .json({ message: `User with this credentials is already registered!` })
+    if (existingUser) {
+      return res.status(409).json({ message: `User is already registered!` })
     }
 
     if (process.env.SENGRID_API_KEY) {
-      sgMail.setApiKey(process.env.SENGRID_API_KEY)
+      await sgMail.setApiKey(process.env.SENGRID_API_KEY)
+
       await sgMail.send(
         {
           to: email,
@@ -52,9 +50,9 @@ export const registerUser = async (
           })
         }
       )
+    } else {
+      return res.status(401).json({ message: 'Sendgrid api key is missing!' })
     }
-
-    return res.status(401).json({ message: 'Sendgrid api key is missing!' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
