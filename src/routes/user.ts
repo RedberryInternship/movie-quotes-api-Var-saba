@@ -1,11 +1,6 @@
+import { emailActivationSchema, passwordSchema, userSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express from 'express'
-import {
-  emailActivationSchema,
-  googleImageSchema,
-  passwordSchema,
-  userSchema,
-} from 'schemas'
 import {
   registerUserWithGoogle,
   userEmailActivation,
@@ -25,7 +20,6 @@ router.post(
 router.post(
   '/register-google-user',
   userSchema,
-  googleImageSchema,
   validateRequestSchema,
   registerUserWithGoogle
 )

@@ -70,14 +70,14 @@ export const registerUserWithGoogle = async (
   res: Response
 ) => {
   try {
-    const { name, email, image } = req.body
+    const { name, email } = req.body
 
     const existingUser = await User.findOne({ email })
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET!)
 
     if (!existingUser) {
-      const newUser = await User.create({ name, email, image })
+      const newUser = await User.create({ name, email })
 
       newUser.verified = true
 
