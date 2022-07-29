@@ -15,7 +15,7 @@ const userSchema = [
     .exists()
     .trim()
     .isEmail()
-    .withMessage('Enter valide email address'),
+    .withMessage('Enter valid email address'),
 ]
 
 export default userSchema
