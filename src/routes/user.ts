@@ -1,6 +1,6 @@
-import { passwordSchema, userSchema } from 'schemas'
+import { passwordSchema, userSchema, emailActivationSchema } from 'schemas'
+import { registerUser, userEmailActivation } from 'controllers'
 import { validateRequestSchema } from 'middlewares'
-import { registerUser } from 'controllers'
 import express from 'express'
 
 const router = express.Router()
@@ -11,6 +11,13 @@ router.post(
   userSchema,
   validateRequestSchema,
   registerUser
+)
+
+router.put(
+  '/activate-account',
+  emailActivationSchema,
+  validateRequestSchema,
+  userEmailActivation
 )
 
 export default router

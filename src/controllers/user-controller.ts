@@ -1,5 +1,5 @@
+import { RegisterMemberReq, EmailActivationReq } from './types.d'
 import { RequestBody, Response } from 'types.d'
-import { RegisterMemberReq } from './types.d'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
@@ -58,5 +58,34 @@ export const registerUser = async (
     }
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
+  }
+}
+
+export const userEmailActivation = async (
+  req: RequestBody<EmailActivationReq>,
+  res: Response
+) => {
+  try {
+    const { email, token } = req.body
+
+    const existingUser = await User.findOne({ email })
+
+    if (!existingUser) {
+      return res.status(404).json({ message: `User is not registered yet!` })
+    }
+
+    const verified = jwt.verify(token, process.env.EMAIL_SECRET!)
+
+    if (verified) {
+      await User.updateOne({ email }, { verified: true })
+
+      return res.status(200).json({
+        message: 'Account activated successfully!',
+      })
+    }
+
+    return res.status(401).json({ message: 'Token is not valid' })
+  } catch (error) {
+    return res.status(500).json({ message: 'Email verification failed!' })
   }
 }

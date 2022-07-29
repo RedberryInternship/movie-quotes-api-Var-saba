@@ -3,3 +3,8 @@ export type RegisterMemberReq = {
   email: string
   name: string
 }
+
+export type EmailActivationReq = {
+  email: string
+  token: string
+}
