@@ -1,13 +1,14 @@
-import { RequestBody, Response } from 'types.d'
-import jwt_decode,   from 'jwt-decode'
+import { RequestBody, Response, RequestQuery } from 'types.d'
+import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
   RegisterGoogleMemberReq,
+  EmailActivationReq,
   RegisterMemberReq,
-  RequestQuery,
+  Email,
 } from './types.d'
 
 export const registerUser = async (
@@ -39,7 +40,7 @@ export const registerUser = async (
           to: email,
           from: 'vartasashvili94@gmail.com',
           subject: 'Account verification',
-          text: `<a href=${process.env.FRONTEND_URI}?emailToConfirm=${email}&token=${emailToken}>Click to Confirm Email</a>`,
+          text: `<a href=${process.env.FRONTEND_URI}?token=${emailToken}>Click to Confirm Email</a>`,
         },
         false,
         async (err: any) => {
@@ -94,13 +95,13 @@ export const registerUserWithGoogle = async (
 }
 
 export const userEmailActivation = async (
-  req: RequestQuery<{token: string}>,
+  req: RequestQuery<EmailActivationReq>,
   res: Response
 ) => {
   try {
     const { token } = req.query
 
-    let decodedToken = jwt_decode<{ email: string }>(token)
+    let decodedToken = jwt_decode<Email>(token)
 
     if (decodedToken) {
       let userEmil = decodedToken.email

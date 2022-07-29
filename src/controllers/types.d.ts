@@ -5,7 +5,6 @@ export type RegisterMemberReq = {
 }
 
 export type EmailActivationReq = {
-  email: string
   token: string
 }
 
@@ -14,3 +13,5 @@ export type RegisterGoogleMemberReq = {
   image: string
   name: string
 }
+
+export type Email = { email: string }
