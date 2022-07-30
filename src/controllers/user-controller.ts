@@ -49,7 +49,7 @@ export const registerUser = async (
         `${process.env.FRONTEND_URI}/?token=${emailToken}`
       )
       newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'account')
-      newEmailTemp = newEmailTemp.replace('{% User-Name %}', name)
+      newEmailTemp = newEmailTemp.replace('{% user-name %}', name)
 
       await sgMail.send(
         {
@@ -75,9 +75,9 @@ export const registerUser = async (
           })
         }
       )
-    } else {
-      return res.status(401).json({ message: 'Sendgrid api key is missing!' })
     }
+
+    return res.status(401).json({ message: 'Sendgrid api key is missing!' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
