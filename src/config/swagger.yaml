@@ -57,3 +57,64 @@ paths:
                     type: string
                 example:
                   message: User is not registered yet!
+
+  /register-user:
+    post:
+      tags:
+        - User
+      description: Register new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: number
+            example:
+              name: 'john'
+              email: 'john@gmail.com'
+              password: 'password'
+      responses:
+        '201':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User registered successfully! Account verification link sent.
+        '401':
+          description: Email Couldn't be sent because mailing service api key is missing or is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Sendgrid api key is missing!
+        '409':
+          description: User already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is already registered!
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
