@@ -18,6 +18,7 @@ servers:
     description: production server
 
 paths:
+  # Users
   /activate-account:
     get:
       parameters:
@@ -43,7 +44,7 @@ paths:
                 example:
                   message: Account activated successfully!
         '403':
-          description: Internal Server Error.
+          description: Provided JWT token is invalid.
           content:
             application/json:
               schema:
@@ -121,6 +122,42 @@ paths:
                     type: string
                 example:
                   message: User is already registered!
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /register-google-user:
+    post:
+      tags:
+        - User
+      description: Register new user after google authentication and get JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+            example:
+              name: 'john'
+              email: 'john@gmail.com'
+      responses:
+        '200':
+          description: JWT token sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                example:
+                  message: JWT token
         '422':
           description: Unprocessed Entity
         '500':
