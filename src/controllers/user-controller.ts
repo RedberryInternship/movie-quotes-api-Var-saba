@@ -110,16 +110,18 @@ export const registerUserWithGoogle = async (
   }
 }
 
-export const userEmailActivation = async (
+export const userAccountActivation = async (
   req: RequestQuery<EmailActivationReq>,
   res: Response
 ) => {
   try {
     const { token } = req.query
 
-    let decodedToken = jwt_decode<Email>(token)
+    const verified = jwt.verify(token, process.env.JWT_SECRET!)
 
-    if (decodedToken) {
+    if (verified) {
+      let decodedToken = jwt_decode<Email>(token)
+
       let userEmil = decodedToken.email
 
       const existingUser = await User.findOne({ email: userEmil })
@@ -128,19 +130,15 @@ export const userEmailActivation = async (
         return res.status(404).json({ message: `User is not registered yet!` })
       }
 
-      const verified = jwt.verify(token, process.env.JWT_SECRET!)
+      await User.updateOne({ email: userEmil }, { verified: true })
 
-      if (verified) {
-        await User.updateOne({ email: userEmil }, { verified: true })
-
-        return res.status(200).json({
-          message: 'Account activated successfully!',
-        })
-      }
+      return res.status(200).json({
+        message: 'Account activated successfully!',
+      })
     }
-
-    return res.status(401).json({ message: 'Token is not valid' })
-  } catch (error) {
-    return res.status(500).json({ message: 'Email verification failed!' })
+  } catch (error: any) {
+    return res.status(403).json({
+      message: 'Account activation failed. JWT token is invalid!',
+    })
   }
 }

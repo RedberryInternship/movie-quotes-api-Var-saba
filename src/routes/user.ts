@@ -3,7 +3,7 @@ import { validateRequestSchema } from 'middlewares'
 import express from 'express'
 import {
   registerUserWithGoogle,
-  userEmailActivation,
+  userAccountActivation,
   registerUser,
 } from 'controllers'
 
@@ -24,6 +24,6 @@ router.post(
   registerUserWithGoogle
 )
 
-router.get('/activate-account', userEmailActivation)
+router.get('/activate-account', userAccountActivation)
 
 export default router
