@@ -197,7 +197,64 @@ paths:
                   token:
                     type: string
                 example:
+                  token: JWT token
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /change-password:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+            example:
+              password: 'newpassword'
+      responses:
+        '200':
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
                   message: JWT token
+        '401':
+          description: JWT token verification failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized to change password. Token verification failed.
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not registered!
         '422':
           description: Unprocessed Entity
         '500':
