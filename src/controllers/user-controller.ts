@@ -1,22 +1,16 @@
 import { RequestBody, Response, RequestQuery } from 'types.d'
+import { generateEmail } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
-import path from 'path'
-import fs from 'fs'
 import {
   RegisterGoogleMemberReq,
   EmailActivationReq,
   RegisterMemberReq,
   Email,
 } from './types.d'
-
-const emailTemplate = fs.readFileSync(
-  path.join(__dirname, '..', 'views', 'email-template.html'),
-  'utf-8'
-)
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -42,21 +36,14 @@ export const registerUser = async (
 
       const emailToken = jwt.sign({ email }, process.env.JWT_SECRET!)
 
-      let newEmailTemp = emailTemplate
-
-      newEmailTemp = newEmailTemp.replace(
-        /{% uri %}/g,
-        `${process.env.FRONTEND_URI}/?token=${emailToken}`
-      )
-      newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'account')
-      newEmailTemp = newEmailTemp.replace('{% user-name %}', name)
+      const emailTemp = generateEmail(name, 'account', `/?token=${emailToken}`)
 
       await sgMail.send(
         {
           to: email,
           from: 'vartasashvili94@gmail.com',
           subject: 'Please verify your account',
-          html: newEmailTemp,
+          html: emailTemp,
         },
         false,
         async (err: any) => {
@@ -172,16 +159,10 @@ export const verifyUserEmail = async (
       if (existingUser.password) {
         const token = jwt.sign({ email }, process.env.JWT_SECRET!)
 
-        let newEmailTemp = emailTemplate
-
-        newEmailTemp = newEmailTemp.replace(
-          /{% uri %}/g,
-          `${process.env.FRONTEND_URI}/?emailVerificationToken=${token}`
-        )
-        newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'email')
-        newEmailTemp = newEmailTemp.replace(
-          '{% user-name %}',
-          existingUser.name
+        const emailTemp = generateEmail(
+          existingUser.name,
+          'email',
+          `/?emailVerificationToken=${token}`
         )
 
         if (process.env.SENGRID_API_KEY) {
@@ -193,7 +174,7 @@ export const verifyUserEmail = async (
             to: email,
             from: 'vartasashvili94@gmail.com',
             subject: 'Please verify your email address',
-            html: newEmailTemp,
+            html: emailTemp,
           },
           false,
           async (err: any) => {

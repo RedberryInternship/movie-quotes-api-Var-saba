@@ -8,7 +8,6 @@ const userSchema = new Schema<UserModel>({
     type: String,
     lowercase: true,
     required: true,
-    unique: true,
     trim: true,
   },
 
