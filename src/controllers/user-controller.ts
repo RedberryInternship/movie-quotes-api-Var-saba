@@ -100,9 +100,7 @@ export const userAccountActivation = async (
     const verified = jwt.verify(token, process.env.JWT_SECRET!)
 
     if (verified) {
-      let decodedToken = jwt_decode<Email>(token)
-
-      let userEmil = decodedToken.email
+      let userEmil = jwt_decode<Email>(token).email
 
       const existingUser = await User.findOne({ email: userEmil })
 
@@ -124,7 +122,7 @@ export const userAccountActivation = async (
 }
 
 export const verifyUserEmail = async (
-  req: RequestQuery<{ email: string }>,
+  req: RequestQuery<Email>,
   res: Response
 ) => {
   try {
@@ -142,13 +140,6 @@ export const verifyUserEmail = async (
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      if (!existingUser.password) {
-        return res.status(200).json({
-          message:
-            "User is registered with google authentication. Can't change google account password.",
-        })
-      }
-
       if (existingUser.password) {
         const token = jwt.sign({ email }, process.env.JWT_SECRET!)
 
@@ -169,13 +160,18 @@ export const verifyUserEmail = async (
             return res.status(500).json({
               message: err.message,
             })
-          } else {
-            return res.status(200).json({
-              message: 'Email verification link sent. Check your email.',
-            })
           }
+
+          return res.status(200).json({
+            message: 'Email verification link sent. Check your email.',
+          })
         })
       }
+
+      return res.status(200).json({
+        message:
+          "User is registered with google authentication. Can't change google account password.",
+      })
     } else {
       return res.status(404).json({
         message: 'User with this email is not registered yet.',
