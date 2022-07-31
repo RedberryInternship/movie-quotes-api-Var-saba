@@ -1,4 +1,4 @@
-import { swaggerMiddleware } from 'middlewares'
+import { swaggerMiddleware, authMiddleware } from 'middlewares'
 import SwaggerUI from 'swagger-ui-express'
 import { connectToMongo } from 'config'
 import { userRouter } from 'routes'
@@ -14,6 +14,8 @@ connectToMongo()
 
 server.use(express.json())
 server.use('/api-docs', SwaggerUI.serve, swaggerMiddleware())
+
+server.use(authMiddleware)
 
 server.use(userRouter)
 
