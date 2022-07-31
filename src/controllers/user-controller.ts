@@ -1,5 +1,5 @@
 import { RequestBody, Response, RequestQuery } from 'types.d'
-import { generateEmail, emailData } from 'utils'
+import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
@@ -19,7 +19,7 @@ export const registerUser = async (
   try {
     const { name, email, password } = req.body
 
-    if (!/^[a-z0-9]+$/g.test(name) || !/^[a-z0-9]+$/g.test(password)) {
+    if (!isLowercase(name) || !isLowercase(password)) {
       return res
         .status(422)
         .json({ message: 'Credentials should include lowercase characters!' })
