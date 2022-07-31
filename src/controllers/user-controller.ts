@@ -1,22 +1,17 @@
 import { RequestBody, Response, RequestQuery } from 'types.d'
+import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
-import path from 'path'
-import fs from 'fs'
 import {
   RegisterGoogleMemberReq,
   EmailActivationReq,
   RegisterMemberReq,
+  ChangePasswordReq,
   Email,
 } from './types.d'
-
-const emailTemplate = fs.readFileSync(
-  path.join(__dirname, '..', 'views', 'email-template.html'),
-  'utf-8'
-)
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -25,7 +20,7 @@ export const registerUser = async (
   try {
     const { name, email, password } = req.body
 
-    if (!/^[a-z0-9]+$/g.test(name) || !/^[a-z0-9]+$/g.test(password)) {
+    if (!isLowercase(name) || !isLowercase(password)) {
       return res
         .status(422)
         .json({ message: 'Credentials should include lowercase characters!' })
@@ -42,39 +37,25 @@ export const registerUser = async (
 
       const emailToken = jwt.sign({ email }, process.env.JWT_SECRET!)
 
-      let newEmailTemp = emailTemplate
+      const emailTemp = generateEmail(name, 'account', `/?token=${emailToken}`)
 
-      newEmailTemp = newEmailTemp.replace(
-        /{% uri %}/g,
-        `${process.env.FRONTEND_URI}/?token=${emailToken}`
-      )
-      newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'account')
-      newEmailTemp = newEmailTemp.replace('{% user-name %}', name)
+      const data = emailData(email, 'account', emailTemp)
 
-      await sgMail.send(
-        {
-          to: email,
-          from: 'vartasashvili94@gmail.com',
-          subject: 'Account verification',
-          html: newEmailTemp,
-        },
-        false,
-        async (err: any) => {
-          if (err) {
-            return res.status(500).json({
-              message: 'User registration failed! Email could not be sent.',
-            })
-          }
-
-          const hashedPassword = await bcrypt.hash(password, 12)
-          await User.create({ name, email, password: hashedPassword })
-
-          return res.status(201).json({
-            message:
-              'User registered successfully! Account verification link sent.',
+      await sgMail.send(data, false, async (err: any) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
           })
         }
-      )
+
+        const hashedPassword = await bcrypt.hash(password, 12)
+        await User.create({ name, email, password: hashedPassword })
+
+        return res.status(201).json({
+          message:
+            'User registered successfully! Account verification link sent.',
+        })
+      })
     } else {
       return res.status(401).json({ message: 'Sendgrid api key is missing!' })
     }
@@ -120,9 +101,7 @@ export const userAccountActivation = async (
     const verified = jwt.verify(token, process.env.JWT_SECRET!)
 
     if (verified) {
-      let decodedToken = jwt_decode<Email>(token)
-
-      let userEmil = decodedToken.email
+      let userEmil = jwt_decode<Email>(token).email
 
       const existingUser = await User.findOne({ email: userEmil })
 
@@ -135,10 +114,112 @@ export const userAccountActivation = async (
       return res.status(200).json({
         message: 'Account activated successfully!',
       })
+    } else {
+      return res.status(401).json({
+        message:
+          'User is not authorized to activate account. Token verification failed',
+      })
     }
   } catch (error: any) {
-    return res.status(403).json({
-      message: 'Account activation failed. JWT token is invalid!',
+    return res.status(500).json({
+      message: error.message,
     })
+  }
+}
+
+export const verifyUserEmail = async (
+  req: RequestQuery<Email>,
+  res: Response
+) => {
+  try {
+    const { email } = req.query
+
+    const emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    if (!email || !email.match(emailRegex)) {
+      return res.status(422).json({
+        message: 'Enter valid email query param',
+      })
+    }
+
+    const existingUser = await User.findOne({ email })
+
+    if (existingUser) {
+      if (existingUser.password) {
+        const token = jwt.sign({ email }, process.env.JWT_SECRET!)
+
+        const emailTemp = generateEmail(
+          existingUser.name,
+          'email',
+          `/?emailVerificationToken=${token}`
+        )
+
+        if (process.env.SENGRID_API_KEY) {
+          sgMail.setApiKey(process.env.SENGRID_API_KEY)
+        }
+
+        const data = emailData(email, 'email address', emailTemp)
+
+        await sgMail.send(data, false, async (err: any) => {
+          if (err) {
+            return res.status(500).json({
+              message: err.message,
+            })
+          }
+
+          return res.status(200).json({
+            message: 'Email verification link sent. Check your email.',
+          })
+        })
+      }
+
+      return res.status(200).json({
+        message:
+          "User is registered with google authentication. Can't change google account password.",
+      })
+    } else {
+      return res.status(404).json({
+        message: 'User with this email is not registered yet.',
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const changePassword = async (req: ChangePasswordReq, res: Response) => {
+  try {
+    const { authorization } = req.headers
+    const { password } = req.body
+
+    const token = authorization.trim().split(' ')[1]
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET!)
+
+    if (verified) {
+      let email = jwt_decode<Email>(token).email
+
+      const existingUser = await User.findOne({ email })
+
+      if (!existingUser || !existingUser.password) {
+        return res.status(404).json({ message: `User is not registered!` })
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12)
+
+      await User.updateOne({ email }, { password: hashedPassword })
+
+      return res.status(200).json({ message: 'Password updated successfully' })
+    } else {
+      return res.status(401).json({
+        message:
+          'User is not authorized to change password. Token verification failed.',
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }

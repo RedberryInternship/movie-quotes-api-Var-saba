@@ -1,6 +1,6 @@
 import { check } from 'express-validator'
 
-const emailActivationSchema = [
+const emailSchema = [
   check('email')
     .exists()
     .trim()
@@ -10,4 +10,4 @@ const emailActivationSchema = [
   check('token').exists().trim().withMessage('Token is required!'),
 ]
 
-export default emailActivationSchema
+export default emailSchema
