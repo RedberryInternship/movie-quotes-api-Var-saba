@@ -66,6 +66,46 @@ paths:
                 example:
                   message: User is not registered yet!
 
+  /verify-email:
+    get:
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+          description: Enter your email address
+      tags:
+        - User
+      description: Verify email address and get email with JWT token
+      responses:
+        '200':
+          description: Email verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Email verification link sent. Check your email.
+        '404':
+          description: User account with this email address not found. User is not registered yet.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User with this email is not registered yet.
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
   /register-user:
     post:
       tags:
