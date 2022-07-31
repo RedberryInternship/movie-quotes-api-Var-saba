@@ -9,6 +9,7 @@ import {
   RegisterGoogleMemberReq,
   EmailActivationReq,
   RegisterMemberReq,
+  ChangePasswordReq,
   Email,
 } from './types.d'
 
@@ -113,10 +114,15 @@ export const userAccountActivation = async (
       return res.status(200).json({
         message: 'Account activated successfully!',
       })
+    } else {
+      return res.status(401).json({
+        message:
+          'User is not authorized to activate account. Token verification failed',
+      })
     }
   } catch (error: any) {
-    return res.status(403).json({
-      message: 'Account activation failed. JWT token is invalid!',
+    return res.status(500).json({
+      message: error.message,
     })
   }
 }
@@ -181,5 +187,39 @@ export const verifyUserEmail = async (
     return res.status(500).json({
       message: error.message,
     })
+  }
+}
+
+export const changePassword = async (req: ChangePasswordReq, res: Response) => {
+  try {
+    const { authorization } = req.headers
+    const { password } = req.body
+
+    const token = authorization.trim().split(' ')[1]
+
+    const verified = jwt.verify(token, process.env.JWT_SECRET!)
+
+    if (verified) {
+      let email = jwt_decode<Email>(token).email
+
+      const existingUser = await User.findOne({ email })
+
+      if (!existingUser || !existingUser.password) {
+        return res.status(404).json({ message: `User is not registered!` })
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12)
+
+      await User.updateOne({ email }, { password: hashedPassword })
+
+      return res.status(200).json({ message: 'Password updated successfully' })
+    } else {
+      return res.status(401).json({
+        message:
+          'User is not authorized to change password. Token verification failed.',
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }
