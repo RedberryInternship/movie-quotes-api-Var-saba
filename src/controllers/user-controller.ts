@@ -1,5 +1,5 @@
 import { RequestBody, Response, RequestQuery } from 'types.d'
-import { generateEmail } from 'utils'
+import { generateEmail, emailData } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
@@ -38,30 +38,23 @@ export const registerUser = async (
 
       const emailTemp = generateEmail(name, 'account', `/?token=${emailToken}`)
 
-      await sgMail.send(
-        {
-          to: email,
-          from: 'vartasashvili94@gmail.com',
-          subject: 'Please verify your account',
-          html: emailTemp,
-        },
-        false,
-        async (err: any) => {
-          if (err) {
-            return res.status(500).json({
-              message: err.message,
-            })
-          }
+      const data = emailData(email, 'account', emailTemp)
 
-          const hashedPassword = await bcrypt.hash(password, 12)
-          await User.create({ name, email, password: hashedPassword })
-
-          return res.status(201).json({
-            message:
-              'User registered successfully! Account verification link sent.',
+      await sgMail.send(data, false, async (err: any) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
           })
         }
-      )
+
+        const hashedPassword = await bcrypt.hash(password, 12)
+        await User.create({ name, email, password: hashedPassword })
+
+        return res.status(201).json({
+          message:
+            'User registered successfully! Account verification link sent.',
+        })
+      })
     } else {
       return res.status(401).json({ message: 'Sendgrid api key is missing!' })
     }
@@ -169,26 +162,19 @@ export const verifyUserEmail = async (
           sgMail.setApiKey(process.env.SENGRID_API_KEY)
         }
 
-        await sgMail.send(
-          {
-            to: email,
-            from: 'vartasashvili94@gmail.com',
-            subject: 'Please verify your email address',
-            html: emailTemp,
-          },
-          false,
-          async (err: any) => {
-            if (err) {
-              return res.status(500).json({
-                message: err.message,
-              })
-            } else {
-              return res.status(200).json({
-                message: 'Email verification link sent. Check your email.',
-              })
-            }
+        const data = emailData(email, 'email address', emailTemp)
+
+        await sgMail.send(data, false, async (err: any) => {
+          if (err) {
+            return res.status(500).json({
+              message: err.message,
+            })
+          } else {
+            return res.status(200).json({
+              message: 'Email verification link sent. Check your email.',
+            })
           }
-        )
+        })
       }
     } else {
       return res.status(404).json({
