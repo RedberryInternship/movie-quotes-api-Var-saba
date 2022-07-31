@@ -4,6 +4,7 @@ import express from 'express'
 import {
   registerUserWithGoogle,
   userAccountActivation,
+  verifyUserEmail,
   registerUser,
 } from 'controllers'
 
@@ -23,6 +24,8 @@ router.post(
   validateRequestSchema,
   registerUserWithGoogle
 )
+
+router.get('/verify-email', verifyUserEmail)
 
 router.get('/activate-account', userAccountActivation)
 

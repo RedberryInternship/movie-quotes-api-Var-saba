@@ -55,14 +55,14 @@ export const registerUser = async (
         {
           to: email,
           from: 'vartasashvili94@gmail.com',
-          subject: 'Account verification',
+          subject: 'Please verify your account',
           html: newEmailTemp,
         },
         false,
         async (err: any) => {
           if (err) {
             return res.status(500).json({
-              message: 'User registration failed! Email could not be sent.',
+              message: err.message,
             })
           }
 
@@ -139,6 +139,84 @@ export const userAccountActivation = async (
   } catch (error: any) {
     return res.status(403).json({
       message: 'Account activation failed. JWT token is invalid!',
+    })
+  }
+}
+
+export const verifyUserEmail = async (
+  req: RequestQuery<{ email: string }>,
+  res: Response
+) => {
+  try {
+    const { email } = req.query
+
+    const emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+    if (!email || !email.match(emailRegex)) {
+      return res.status(422).json({
+        message: 'Enter valid email query param',
+      })
+    }
+
+    const existingUser = await User.findOne({ email })
+
+    if (existingUser) {
+      if (!existingUser.password) {
+        return res.status(200).json({
+          message:
+            "User is registered with google authentication. Can't change google account password.",
+        })
+      }
+
+      if (existingUser.password) {
+        const token = jwt.sign({ email }, process.env.JWT_SECRET!)
+
+        let newEmailTemp = emailTemplate
+
+        newEmailTemp = newEmailTemp.replace(
+          /{% uri %}/g,
+          `${process.env.FRONTEND_URI}/?emailVerificationToken=${token}`
+        )
+        newEmailTemp = newEmailTemp.replace(/{% verify-object %}/g, 'email')
+        newEmailTemp = newEmailTemp.replace(
+          '{% user-name %}',
+          existingUser.name
+        )
+
+        if (process.env.SENGRID_API_KEY) {
+          sgMail.setApiKey(process.env.SENGRID_API_KEY)
+        }
+
+        await sgMail.send(
+          {
+            to: email,
+            from: 'vartasashvili94@gmail.com',
+            subject: 'Please verify your email address',
+            html: newEmailTemp,
+          },
+          false,
+          async (err: any) => {
+            if (err) {
+              return res.status(500).json({
+                message: err.message,
+              })
+            } else {
+              return res.status(200).json({
+                message: 'Email verification link sent. Check your email.',
+              })
+            }
+          }
+        )
+      }
+    } else {
+      return res.status(404).json({
+        message: 'User with this email is not registered yet.',
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
     })
   }
 }
