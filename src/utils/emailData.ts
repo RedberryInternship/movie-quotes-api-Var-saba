@@ -5,7 +5,7 @@ const emailData = (
 ) => {
   return {
     to: email,
-    from: 'vartasashvili94@gmail.com',
+    from: process.env.EMAIL_SENDER!,
     subject: `Please verify your ${emailSubject}`,
     html: emailTemplate,
   }
