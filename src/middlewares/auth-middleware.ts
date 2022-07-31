@@ -4,13 +4,6 @@ import { AuthBody } from './types.d'
 
 const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
   try {
-    // const excludeUris = [
-    //   '/register-user',
-    //   '/register-google-user',
-    //   '/verify-email',
-    //   '/activate-account',
-    // ]
-
     const url = req.url
 
     if (

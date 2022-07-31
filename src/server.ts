@@ -1,8 +1,8 @@
 import { swaggerMiddleware, authMiddleware } from 'middlewares'
+import express, { RequestHandler } from 'express'
 import SwaggerUI from 'swagger-ui-express'
 import { connectToMongo } from 'config'
 import { userRouter } from 'routes'
-import express, { RequestHandler } from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 
