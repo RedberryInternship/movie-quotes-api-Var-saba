@@ -8,7 +8,7 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
 
     if (
       url.includes('/register-user') ||
-      url.includes('/register-google-user') ||
+      url.includes('/google-auth') ||
       url.includes('/verify-email') ||
       url.includes('/activate-account')
     ) {

@@ -64,7 +64,7 @@ export const registerUser = async (
   }
 }
 
-export const registerUserWithGoogle = async (
+export const googleAuth = async (
   req: RequestBody<RegisterGoogleMemberReq>,
   res: Response
 ) => {

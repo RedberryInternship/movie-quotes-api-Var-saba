@@ -167,11 +167,11 @@ paths:
         '500':
           description: Internal Server Error.
 
-  /register-google-user:
+  /google-auth:
     post:
       tags:
         - User
-      description: Register new user after google authentication and get JWT token
+      description: Authenticate with google account and get JWT token
       requestBody:
         required: true
         content:
