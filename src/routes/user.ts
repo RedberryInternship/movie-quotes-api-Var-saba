@@ -2,7 +2,7 @@ import { googleUserSchema, passwordSchema, userSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import {
-  registerUserWithGoogle,
+  googleAuth,
   userAccountActivation,
   verifyUserEmail,
   changePassword,
@@ -26,12 +26,7 @@ router.post(
   changePassword as RequestHandler
 )
 
-router.post(
-  '/register-google-user',
-  googleUserSchema,
-  validateRequestSchema,
-  registerUserWithGoogle
-)
+router.post('/google-auth', googleUserSchema, validateRequestSchema, googleAuth)
 
 router.get('/verify-email', verifyUserEmail)
 
