@@ -1,15 +1,29 @@
-import { googleUserSchema, passwordSchema, userSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import {
-  googleAuth,
   userAccountActivation,
   verifyUserEmail,
   changePassword,
+  authorization,
   registerUser,
+  googleAuth,
 } from 'controllers'
+import {
+  googleUserSchema,
+  passwordSchema,
+  userSchema,
+  authSchema,
+} from 'schemas'
 
 const router = express.Router()
+
+router.post('/google-auth', googleUserSchema, validateRequestSchema, googleAuth)
+
+router.post('/authorization', authSchema, validateRequestSchema, authorization)
+
+router.get('/activate-account', userAccountActivation)
+
+router.get('/verify-email', verifyUserEmail)
 
 router.post(
   '/register-user',
@@ -25,11 +39,5 @@ router.post(
   validateRequestSchema,
   changePassword as RequestHandler
 )
-
-router.post('/google-auth', googleUserSchema, validateRequestSchema, googleAuth)
-
-router.get('/verify-email', verifyUserEmail)
-
-router.get('/activate-account', userAccountActivation)
 
 export default router
