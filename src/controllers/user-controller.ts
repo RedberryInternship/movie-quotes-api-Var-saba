@@ -358,6 +358,10 @@ export const activateNewUserEmail = async (
 
     let newEmail = jwt_decode<Email>(token).email
 
+    if (!newEmail) {
+      return res.status(404).json({ message: 'Enter valid JWT token' })
+    }
+
     const existingUser = await User.findById(userId)
 
     if (!existingUser) {

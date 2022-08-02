@@ -4,6 +4,7 @@ import { uploadUserImage } from 'utils'
 import {
   userAccountActivation,
   changeUserCredentials,
+  activateNewUserEmail,
   verifyUserEmail,
   changePassword,
   uploadUserImg,
@@ -13,11 +14,11 @@ import {
 } from 'controllers'
 import {
   googleUserSchema,
+  changeUserSchema,
   passwordSchema,
   userSchema,
   authSchema,
   idSchema,
-  changeUserSchema,
 } from 'schemas'
 
 const router = express.Router()
@@ -29,6 +30,8 @@ router.post('/authorization', authSchema, validateRequestSchema, authorization)
 router.get('/activate-account', userAccountActivation)
 
 router.get('/verify-email', verifyUserEmail)
+
+router.get('/activate-new-user-email', activateNewUserEmail)
 
 router.post(
   '/register-user',

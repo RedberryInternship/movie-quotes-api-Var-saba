@@ -103,6 +103,63 @@ paths:
                   message: User with this email is not registered yet.
         '422':
           description: Unprocessed Entity
+
+  /activate-new-user-email:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+          description: Enter JWT token you get via email
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+      tags:
+        - User
+      description: Activate new user email
+      responses:
+        '200':
+          description: New email activated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User email changed successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
         '500':
           description: Internal Server Error.
 
