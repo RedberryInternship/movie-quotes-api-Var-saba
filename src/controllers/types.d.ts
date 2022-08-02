@@ -36,3 +36,8 @@ export type ChangeMemberReq = {
   name?: string
   id: string
 }
+
+export type NewEmailReq = {
+  userId: string
+  token: string
+}

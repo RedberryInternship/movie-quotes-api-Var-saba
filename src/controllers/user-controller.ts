@@ -12,6 +12,7 @@ import {
   ChangePasswordReq,
   AuthorizationReq,
   ChangeMemberReq,
+  NewEmailReq,
   Email,
 } from './types.d'
 
@@ -340,6 +341,35 @@ export const changeUserCredentials = async (
       message: `User credentials updated successfully.${
         email ? ' New email verification link sent.' : ''
       }`,
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const activateNewUserEmail = async (
+  req: RequestQuery<NewEmailReq>,
+  res: Response
+) => {
+  try {
+    const { token, userId } = req.query
+
+    let newEmail = jwt_decode<Email>(token).email
+
+    const existingUser = await User.findById(userId)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    existingUser.email = newEmail
+
+    await existingUser.save()
+
+    return res.status(200).json({
+      message: 'User email changed successfully',
     })
   } catch (error: any) {
     return res.status(500).json({
