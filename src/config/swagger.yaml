@@ -375,3 +375,49 @@ paths:
                   message: User not found
         '422':
           description: Unprocessed Entity
+
+  /change-user-credentials:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change user credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                id:
+                  type: string
+            example:
+              name: name
+              email: example@gmail.com
+              password: newpassword
+              id: '62e934bdfc8d986260667984'
+      responses:
+        '200':
+          description: credentials updated successfully
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.

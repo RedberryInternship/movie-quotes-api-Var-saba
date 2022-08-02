@@ -332,17 +332,15 @@ export const changeUserCredentials = async (
             message: err.message,
           })
         }
-
-        return res.status(200).json({
-          message: 'Email verification link sent. Check your email.',
-        })
       })
     }
 
     await currentUser.save()
-    return res
-      .status(200)
-      .json({ message: 'User credentials updated successfully' })
+    return res.status(200).json({
+      message: `User credentials updated successfully.${
+        email ? ' New email verification link sent.' : ''
+      }`,
+    })
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
