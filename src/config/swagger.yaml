@@ -328,3 +328,50 @@ paths:
           description: Unprocessed Entity
         '500':
           description: Internal Server Error.
+
+  /upload-user-image:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Upload user profile image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+            example:
+              id: '62cd66b2bc4b70708a73125f'
+      responses:
+        '201':
+          description: User  image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User image uploaded successfully
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
