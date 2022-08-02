@@ -419,6 +419,17 @@ paths:
                     type: string
                 example:
                   message: User image uploaded successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
         '404':
           description: User not found.
           content:
@@ -463,6 +474,17 @@ paths:
       responses:
         '200':
           description: credentials updated successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
         '404':
           description: User not found
           content:
