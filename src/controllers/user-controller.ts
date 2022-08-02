@@ -10,6 +10,7 @@ import {
   EmailActivationReq,
   RegisterMemberReq,
   ChangePasswordReq,
+  AuthorizationReq,
   Email,
 } from './types.d'
 
@@ -217,6 +218,40 @@ export const changePassword = async (req: ChangePasswordReq, res: Response) => {
       return res.status(401).json({
         message:
           'User is not authorized to change password. Token verification failed.',
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+export const authorization = async (
+  req: RequestBody<AuthorizationReq>,
+  res: Response
+) => {
+  try {
+    const { email, password } = req.body
+    const currentUser = await User.findOne({ email })
+
+    if (!currentUser || !currentUser.password) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (!currentUser.verified) {
+      return res.status(403).json({
+        message: 'User can not log in because account is not verified yet',
+      })
+    }
+
+    const isMatch = await bcrypt.compare(password, currentUser.password!)
+
+    if (isMatch && process.env.JWT_SECRET) {
+      const accessToken = jwt.sign({ email, password }, process.env.JWT_SECRET)
+
+      return res.status(200).json({ token: accessToken })
+    } else {
+      return res.status(401).json({
+        message: 'User is not authorized to change password',
       })
     }
   } catch (error: any) {

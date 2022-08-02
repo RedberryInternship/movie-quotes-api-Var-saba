@@ -24,3 +24,8 @@ export type ChangePasswordReq = {
     password: string
   }
 }
+
+export type AuthorizationReq = {
+  password: string
+  email: string
+}

@@ -203,6 +203,75 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /authorization:
+    post:
+      tags:
+        - User
+      description: Log in ang get JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: 'john@gmail.com'
+              password: 'password'
+      responses:
+        '200':
+          description: User logged in successfully. JWT token sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                example:
+                  token: JWT token
+        '401':
+          description: User is not authorized to change password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized to change password
+        '403':
+          description: Account is not verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User can not log in because account is not verified yet
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
   /change-password:
     post:
       security:
