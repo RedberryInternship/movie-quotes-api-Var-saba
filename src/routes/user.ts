@@ -3,6 +3,7 @@ import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
   userAccountActivation,
+  changeUserCredentials,
   verifyUserEmail,
   changePassword,
   uploadUserImg,
@@ -16,6 +17,7 @@ import {
   userSchema,
   authSchema,
   idSchema,
+  changeUserSchema,
 } from 'schemas'
 
 const router = express.Router()
@@ -49,6 +51,14 @@ router.patch(
   idSchema,
   validateRequestSchema,
   uploadUserImg
+)
+
+router.put(
+  '/change-user-credentials',
+  idSchema,
+  changeUserSchema,
+  validateRequestSchema,
+  changeUserCredentials
 )
 
 export default router

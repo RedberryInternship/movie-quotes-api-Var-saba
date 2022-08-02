@@ -11,6 +11,7 @@ import {
   RegisterMemberReq,
   ChangePasswordReq,
   AuthorizationReq,
+  ChangeMemberReq,
   Email,
 } from './types.d'
 
@@ -283,5 +284,68 @@ export const uploadUserImg = async (
     } else return res.status(422).json({ message: 'Upload user image' })
   } catch (error) {
     return res.status(422).json({ message: 'User Id is not valid' })
+  }
+}
+
+export const changeUserCredentials = async (
+  req: RequestBody<ChangeMemberReq>,
+  res: Response
+) => {
+  try {
+    const { id, email, name, password } = req.body
+
+    const currentUser = await User.findById(id)
+
+    if (!currentUser) {
+      return res.status(404).json({
+        message: 'User not found',
+      })
+    }
+
+    if (name) {
+      currentUser.name = name
+    }
+
+    if (password && currentUser.password) {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      currentUser.password = hashedPassword
+    }
+
+    if (email) {
+      const token = jwt.sign({ email }, process.env.JWT_SECRET!)
+
+      const emailTemp = generateEmail(
+        currentUser.name,
+        'email',
+        `/news-feed/user-profile?token=${token}&userId=${currentUser.id}`
+      )
+
+      if (process.env.SENGRID_API_KEY) {
+        sgMail.setApiKey(process.env.SENGRID_API_KEY)
+      }
+
+      const data = emailData(email, 'email address', emailTemp)
+
+      await sgMail.send(data, false, async (err: any) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
+          })
+        }
+
+        return res.status(200).json({
+          message: 'Email verification link sent. Check your email.',
+        })
+      })
+    }
+
+    await currentUser.save()
+    return res
+      .status(200)
+      .json({ message: 'User credentials updated successfully' })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
   }
 }
