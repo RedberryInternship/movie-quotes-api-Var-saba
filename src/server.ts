@@ -15,6 +15,8 @@ connectToMongo()
 server.use(express.json())
 server.use('/api-docs', SwaggerUI.serve, swaggerMiddleware())
 
+server.use(express.static('public'))
+
 server.use(authMiddleware as RequestHandler)
 
 server.use(userRouter)
