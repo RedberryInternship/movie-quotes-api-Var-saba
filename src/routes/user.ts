@@ -1,9 +1,11 @@
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
+import { uploadUserImage } from 'utils'
 import {
   userAccountActivation,
   verifyUserEmail,
   changePassword,
+  uploadUserImg,
   authorization,
   registerUser,
   googleAuth,
@@ -13,6 +15,7 @@ import {
   passwordSchema,
   userSchema,
   authSchema,
+  idSchema,
 } from 'schemas'
 
 const router = express.Router()
@@ -38,6 +41,14 @@ router.post(
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler
+)
+
+router.patch(
+  '/upload-user-image',
+  uploadUserImage,
+  idSchema,
+  validateRequestSchema,
+  uploadUserImg
 )
 
 export default router

@@ -1,4 +1,4 @@
-import { RequestBody, Response, RequestQuery } from 'types.d'
+import { RequestBody, Response, RequestQuery, ImageReqBody } from 'types.d'
 import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
@@ -256,5 +256,32 @@ export const authorization = async (
     }
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
+  }
+}
+
+export const uploadUserImg = async (
+  req: RequestBody<ImageReqBody>,
+  res: Response
+) => {
+  try {
+    const currentUser = await User.findById(req.body.id)
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (req.body.fileValidationError) {
+      return res.status(422).json({ message: 'Upload only image' })
+    }
+
+    if (req.file) {
+      currentUser.image = req.file.path.substring(7)
+
+      await currentUser.save()
+      return res.status(201).json({
+        message: 'User image uploaded successfully',
+      })
+    } else return res.status(422).json({ message: 'Upload user image' })
+  } catch (error) {
+    return res.status(422).json({ message: 'User Id is not valid' })
   }
 }
