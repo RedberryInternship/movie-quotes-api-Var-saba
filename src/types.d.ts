@@ -16,3 +16,7 @@ export interface Response extends Express.Response {
 }
 
 export type ImageReqBody = { id: string; fileValidationError: string }
+
+export type AccessToken = {
+  accessToken: string
+}

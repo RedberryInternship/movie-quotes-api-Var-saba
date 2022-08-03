@@ -7,6 +7,7 @@ import {
   activateNewUserEmail,
   verifyUserEmail,
   changePassword,
+  getUserDetails,
   uploadUserImg,
   authorization,
   registerUser,
@@ -30,6 +31,8 @@ router.post('/authorization', authSchema, validateRequestSchema, authorization)
 router.get('/activate-account', userAccountActivation)
 
 router.get('/verify-email', verifyUserEmail)
+
+router.get('/user-details', getUserDetails)
 
 router.get('/activate-new-user-email', activateNewUserEmail)
 

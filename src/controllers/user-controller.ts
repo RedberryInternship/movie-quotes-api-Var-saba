@@ -1,4 +1,3 @@
-import { RequestBody, Response, RequestQuery, ImageReqBody } from 'types.d'
 import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
@@ -15,6 +14,13 @@ import {
   NewEmailReq,
   Email,
 } from './types.d'
+import {
+  RequestQuery,
+  ImageReqBody,
+  RequestBody,
+  AccessToken,
+  Response,
+} from 'types.d'
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -375,6 +381,35 @@ export const activateNewUserEmail = async (
     return res.status(200).json({
       message: 'User email changed successfully',
     })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const getUserDetails = async (
+  req: RequestQuery<AccessToken>,
+  res: Response
+) => {
+  try {
+    const { accessToken } = req.query
+
+    let email = jwt_decode<Email>(accessToken).email
+
+    if (!email) {
+      return res.status(401).json({ message: 'Enter valid JWT token' })
+    }
+
+    const existingUser = await User.findOne({ email }).select(
+      '-__v -password -verified'
+    )
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    return res.status(200).json(existingUser)
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
