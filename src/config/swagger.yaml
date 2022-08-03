@@ -163,6 +163,54 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /user-details:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: accessToken
+          required: true
+          schema:
+            type: string
+          description: Enter access token which you got after authorization
+      tags:
+        - User
+      description: Fetch user details
+      responses:
+        '200':
+          description: User details fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                example:
+                  _id: 62e9ec0df44f549d9b153423
+                  name: elon musk
+                  email: spacex@gmail.com
+        '401':
+          description: Provided JWT token is invalid.
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '500':
+          description: Internal Server Error.
+
   /register-user:
     post:
       tags:

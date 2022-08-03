@@ -318,7 +318,7 @@ export const changeUserCredentials = async (
       currentUser.password = hashedPassword
     }
 
-    if (email) {
+    if (email && currentUser.password) {
       const token = jwt.sign({ email }, process.env.JWT_SECRET!)
 
       const emailTemp = generateEmail(
