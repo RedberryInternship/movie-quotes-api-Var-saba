@@ -1,4 +1,4 @@
-import { RequestQuery, RequestBody, Response } from 'types.d'
+import { RequestQuery, RequestBody, Response, AuthorizationReq } from 'types.d'
 import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
@@ -9,7 +9,6 @@ import {
   RegisterGoogleMemberReq,
   EmailActivationReq,
   RegisterMemberReq,
-  AuthorizationReq,
   NewEmailReq,
   Email,
 } from './types.d'
@@ -199,17 +198,7 @@ export const authorization = async (
     const { email, password } = req.body
     const currentUser = await User.findOne({ email })
 
-    if (!currentUser || !currentUser.password) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    if (!currentUser.verified) {
-      return res.status(403).json({
-        message: 'User can not log in because account is not verified yet',
-      })
-    }
-
-    const isMatch = await bcrypt.compare(password, currentUser.password!)
+    const isMatch = await bcrypt.compare(password, currentUser?.password!)
 
     if (isMatch && process.env.JWT_SECRET) {
       const accessToken = jwt.sign({ email, password }, process.env.JWT_SECRET)

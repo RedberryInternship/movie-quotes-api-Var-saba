@@ -1,38 +1,37 @@
-import { validateRequestSchema } from 'middlewares'
-import express, { RequestHandler } from 'express'
-import { uploadUserImage } from 'utils'
+import { validateRequestSchema, authorizationReq } from 'middlewares'
+import express from 'express'
 import {
   userAccountActivation,
-  changeUserCredentials,
   activateNewUserEmail,
   verifyUserEmail,
-  changePassword,
-  getUserDetails,
-  uploadUserImg,
   authorization,
   registerUser,
   googleAuth,
 } from 'controllers'
 import {
   googleUserSchema,
-  changeUserSchema,
   passwordSchema,
   userSchema,
   authSchema,
-  idSchema,
 } from 'schemas'
 
 const router = express.Router()
 
 router.post('/google-auth', googleUserSchema, validateRequestSchema, googleAuth)
 
-router.post('/authorization', authSchema, validateRequestSchema, authorization)
+router.get('/activate-new-user-email', activateNewUserEmail)
 
 router.get('/activate-account', userAccountActivation)
 
 router.get('/verify-email', verifyUserEmail)
 
-router.get('/activate-new-user-email', activateNewUserEmail)
+router.post(
+  '/authorization',
+  authSchema,
+  validateRequestSchema,
+  authorizationReq,
+  authorization
+)
 
 router.post(
   '/register-user',

@@ -20,3 +20,8 @@ export type ImageReqBody = { id: string; fileValidationError: string }
 export type AccessToken = {
   accessToken: string
 }
+
+export type AuthorizationReq = {
+  password: string
+  email: string
+}
