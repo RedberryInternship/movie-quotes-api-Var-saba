@@ -1,3 +1,6 @@
 export { default as generateEmail } from './generateEmail'
 export { default as isLowercase } from './isLowercase'
+export { default as deleteFile } from './deleteFile'
 export { default as emailData } from './emailData'
+export * from './multerProperties'
+export * from './storage'

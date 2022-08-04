@@ -18,7 +18,8 @@ servers:
     description: production server
 
 paths:
-  # Users
+  # Authentication
+
   /activate-account:
     get:
       parameters:
@@ -29,7 +30,7 @@ paths:
             type: string
           description: Check your email after registration and enter JWT token which you got
       tags:
-        - User
+        - Authentication
       description: Activate user account after registration with JWT token
       responses:
         '200':
@@ -76,7 +77,7 @@ paths:
             type: string
           description: Enter your email address
       tags:
-        - User
+        - Authentication
       description: Verify email address and get email with JWT token
       responses:
         '200':
@@ -103,13 +104,70 @@ paths:
                   message: User with this email is not registered yet.
         '422':
           description: Unprocessed Entity
+
+  /activate-new-user-email:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+          description: Enter JWT token you get via email
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+      tags:
+        - Authentication
+      description: Activate new user email
+      responses:
+        '200':
+          description: New email activated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User email changed successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
         '500':
           description: Internal Server Error.
 
   /register-user:
     post:
       tags:
-        - User
+        - Authentication
       description: Register new user
       requestBody:
         required: true
@@ -170,7 +228,7 @@ paths:
   /google-auth:
     post:
       tags:
-        - User
+        - Authentication
       description: Authenticate with google account and get JWT token
       requestBody:
         required: true
@@ -206,7 +264,7 @@ paths:
   /authorization:
     post:
       tags:
-        - User
+        - Authentication
       description: Log in ang get JWT token
       requestBody:
         required: true
@@ -272,6 +330,55 @@ paths:
         '500':
           description: Internal Server Error.
 
+  # Users
+  /user-details:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: accessToken
+          required: true
+          schema:
+            type: string
+          description: Enter access token which you got after authorization
+      tags:
+        - User
+      description: Fetch user details
+      responses:
+        '200':
+          description: User details fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                example:
+                  _id: 62e9ec0df44f549d9b153423
+                  name: elon musk
+                  email: spacex@gmail.com
+        '401':
+          description: Provided JWT token is invalid.
+        '404':
+          description: User account not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '500':
+          description: Internal Server Error.
+
   /change-password:
     post:
       security:
@@ -324,6 +431,121 @@ paths:
                     type: string
                 example:
                   message: User is not registered!
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /upload-user-image:
+    patch:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Upload user profile image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+            example:
+              id: '62cd66b2bc4b70708a73125f'
+      responses:
+        '201':
+          description: User  image uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User image uploaded successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
+
+  /change-user-credentials:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change user credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                id:
+                  type: string
+            example:
+              name: name
+              email: example@gmail.com
+              password: newpassword
+              id: '62e934bdfc8d986260667984'
+      responses:
+        '200':
+          description: credentials updated successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
         '422':
           description: Unprocessed Entity
         '500':

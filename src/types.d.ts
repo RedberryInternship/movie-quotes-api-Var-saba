@@ -14,3 +14,14 @@ export interface Response extends Express.Response {
   status: (number: number) => { json: JsonType }
   json: JsonType
 }
+
+export type ImageReqBody = { id: string; fileValidationError: string }
+
+export type AccessToken = {
+  accessToken: string
+}
+
+export type AuthorizationReq = {
+  password: string
+  email: string
+}
