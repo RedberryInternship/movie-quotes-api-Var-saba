@@ -1,6 +1,6 @@
 import { swaggerMiddleware, authMiddleware } from 'middlewares'
+import { userRouter, authRouter, moviesRouter } from 'routes'
 import express, { RequestHandler } from 'express'
-import { userRouter, authRouter } from 'routes'
 import SwaggerUI from 'swagger-ui-express'
 import { connectToMongo } from 'config'
 import dotenv from 'dotenv'
@@ -21,6 +21,7 @@ server.use(authMiddleware as RequestHandler)
 
 server.use(authRouter)
 server.use(userRouter)
+server.use(moviesRouter)
 
 server.listen(process.env.SERVER_PORT, () => {
   console.log(
