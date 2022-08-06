@@ -550,3 +550,35 @@ paths:
           description: Unprocessed Entity
         '500':
           description: Internal Server Error.
+
+  # Movies
+  /film-genres:
+    get:
+      tags:
+        - Movies
+      description: Fetch Film genres
+      responses:
+        '200':
+          description: Film genres fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                [
+                  'Adventure',
+                  'Musicals',
+                  'Romance',
+                  'Fantasy',
+                  'Romance',
+                  'Mystery',
+                  'Action',
+                  'Comedy',
+                  'Horror',
+                  'Sports',
+                  'Drama',
+                ]
+        '500':
+          description: Internal server error
