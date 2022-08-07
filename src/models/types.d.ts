@@ -14,5 +14,6 @@ export type MovieModel = {
   film_genres: string[]
   director_en: string
   director_ge: string
+  image?: string
   budget: number
 }

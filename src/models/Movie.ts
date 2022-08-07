@@ -30,6 +30,10 @@ const movieSchema = new Schema<MovieModel>({
     },
   ],
 
+  image: {
+    type: String,
+  },
+
   movie_description_en: { type: String, required: true, trim: true },
 
   movie_description_ge: { type: String, required: true, trim: true },
