@@ -2,32 +2,26 @@ import { check } from 'express-validator'
 
 const movieSchema = [
   check('movie_description_en')
-    .trim()
     .exists()
     .withMessage('Movie description in English is required'),
 
   check('movie_description_ge')
-    .trim()
     .exists()
     .withMessage('Movie description in Georgian is required'),
 
   check('movie_name_ge')
-    .trim()
     .exists()
     .withMessage('Movie name in Georgian is required'),
 
   check('movie_name_en')
-    .trim()
     .exists()
     .withMessage('Movie name in English is required'),
 
   check('director_en')
-    .trim()
     .exists()
     .withMessage('Director name in English is required'),
 
   check('director_ge')
-    .trim()
     .exists()
     .withMessage('Director name in Georgian is required'),
 
@@ -37,11 +31,35 @@ const movieSchema = [
     .isNumeric()
     .withMessage('Budget must be a number'),
 
-  check('options.*')
-    .isLength({
-      min: 1,
+  check('film_genres')
+    .isArray()
+    .withMessage('Film genres should be type of array with string values')
+    .custom((arr: string[]) => {
+      const filmGenres = [
+        'Adventure',
+        'Musicals',
+        'Romance',
+        'Fantasy',
+        'Romance',
+        'Mystery',
+        'Action',
+        'Comedy',
+        'Horror',
+        'Sports',
+        'Drama',
+      ]
+
+      for (let i = 0; i < arr.length; i++) {
+        if (!filmGenres.includes(arr[i])) {
+          return false
+        }
+      }
+
+      return true
     })
-    .withMessage('Film genres should contain at least one genre'),
+    .withMessage(
+      'Film Genres should contain following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
+    ),
 ]
 
 export default movieSchema
