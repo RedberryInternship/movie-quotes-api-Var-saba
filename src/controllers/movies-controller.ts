@@ -45,7 +45,7 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       return res.status(409).json({ message: 'Movie is already added' })
     }
 
-    await Movie.create({
+    const { _id } = await Movie.create({
       movie_description_ge,
       movie_description_en,
       movie_name_en,
@@ -56,7 +56,9 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       budget,
     })
 
-    return res.status(201).json({ message: 'Movie added successfully' })
+    return res
+      .status(201)
+      .json({ message: 'Movie added successfully', movieId: _id })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

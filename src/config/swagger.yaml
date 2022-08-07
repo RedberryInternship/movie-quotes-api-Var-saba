@@ -634,8 +634,11 @@ paths:
                 properties:
                   message:
                     type: string
+                  movieId:
+                    type: string
                 example:
                   message: Movie added successfully
+                  movieId: 62f007c6705fa10ff2349c05
         '409':
           description: Movie is already added
           content:
