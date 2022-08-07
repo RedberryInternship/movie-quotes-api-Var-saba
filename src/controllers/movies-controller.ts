@@ -62,7 +62,7 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
   }
 }
 
-export const uploadMovieImage = async (
+export const uploadMovieImg = async (
   req: RequestBody<ImageReqBody>,
   res: Response
 ) => {
