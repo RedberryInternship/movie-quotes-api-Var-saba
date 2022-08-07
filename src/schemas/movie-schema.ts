@@ -58,7 +58,7 @@ const movieSchema = [
       return true
     })
     .withMessage(
-      'Film Genres should contain following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
+      'Film Genres should contain only following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
     ),
 ]
 
