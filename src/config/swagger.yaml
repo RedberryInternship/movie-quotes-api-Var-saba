@@ -583,6 +583,59 @@ paths:
         '500':
           description: Internal server error
 
+  /all-movies:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: Enter mongodb id of certain user
+      tags:
+        - Movie
+      description: Fetch all movies added by user
+      responses:
+        '200':
+          description: Movies fetched successfully
+        '401':
+          description: User is not authorized
+        '403':
+          description: Authorization header does not include valid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Token is not valid
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Provided userId is invalid
+
   /add-movie:
     post:
       security:

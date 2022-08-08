@@ -90,10 +90,6 @@ export const getAllMovies = async (
 
     const existingUser = await User.findById(userId)
 
-    if (!userId || userId.length !== 24) {
-      return res.status(404).json({ message: 'Enter valid userId' })
-    }
-
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -104,8 +100,8 @@ export const getAllMovies = async (
 
     return res.status(200).json(movies)
   } catch (error: any) {
-    return res.status(500).json({
-      message: error.message,
+    return res.status(422).json({
+      message: 'Provided userId is invalid',
     })
   }
 }
