@@ -3,26 +3,32 @@ import { check } from 'express-validator'
 const movieSchema = [
   check('movie_description_en')
     .exists()
+    .notEmpty()
     .withMessage('Movie description in English is required'),
 
   check('movie_description_ge')
     .exists()
+    .notEmpty()
     .withMessage('Movie description in Georgian is required'),
 
   check('movie_name_ge')
     .exists()
+    .notEmpty()
     .withMessage('Movie name in Georgian is required'),
 
   check('movie_name_en')
     .exists()
+    .notEmpty()
     .withMessage('Movie name in English is required'),
 
   check('director_en')
     .exists()
+    .notEmpty()
     .withMessage('Director name in English is required'),
 
   check('director_ge')
     .exists()
+    .notEmpty()
     .withMessage('Director name in Georgian is required'),
 
   check('budget')
@@ -32,6 +38,7 @@ const movieSchema = [
     .withMessage('Budget must be a number'),
 
   check('film_genres')
+    .exists()
     .isArray()
     .withMessage('Film genres should be type of array with string values')
     .custom((arr: string[]) => {
@@ -58,7 +65,7 @@ const movieSchema = [
       return true
     })
     .withMessage(
-      'Film Genres should contain only following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
+      'Film Genres should be array of strings and contain only following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
     ),
 ]
 

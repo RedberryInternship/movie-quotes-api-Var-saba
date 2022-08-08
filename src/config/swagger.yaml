@@ -593,7 +593,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -611,10 +611,15 @@ paths:
                   type: string
                 budget:
                   type: number
-                film_genres:
+                film_genres[]:
                   type: array
                   items:
                     type: string
+                  example:
+                    - Adventure
+                image:
+                  type: string
+                  format: binary
             example:
               movie_name_en: 'Movie name'
               movie_name_ge: 'ფილმის სახელი'
@@ -623,7 +628,6 @@ paths:
               director_en: 'Director'
               director_ge: 'რეჟისორი'
               budget: 999999999
-              film_genres: ['Horror', 'Fantasy', 'Adventure']
       responses:
         '201':
           description: Movie added
@@ -638,7 +642,6 @@ paths:
                     type: string
                 example:
                   message: Movie added successfully
-                  movieId: 62f007c6705fa10ff2349c05
         '409':
           description: Movie is already added
           content:
@@ -654,61 +657,3 @@ paths:
           description: Unprocessed Entity
         '500':
           description: Internal server error
-
-  /upload-movie-image:
-    patch:
-      security:
-        - bearerAuth: []
-      tags:
-        - Movie
-      description: Upload movie image
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                image:
-                  type: string
-                  format: binary
-            example:
-              id: '62cd66b2bc4b70708a73125f'
-      responses:
-        '201':
-          description: Movie image uploaded successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Movie image uploaded successfully
-        '401':
-          description: User is not authorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User is not authorized
-        '404':
-          description: Movie not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Movie not found
-        '422':
-          description: Unprocessed Entity
