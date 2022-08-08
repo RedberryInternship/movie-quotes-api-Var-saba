@@ -1,6 +1,7 @@
-import { Response, RequestBody } from 'types.d'
-import { MovieModel, Movie } from 'models'
+import { Response, RequestBody, RequestQuery } from 'types.d'
+import { MovieModel, Movie, User } from 'models'
 import { deleteFile } from 'utils'
+import mongoose from 'mongoose'
 import fs from 'fs'
 
 export const getFilmGenres = async (_, res: Response) => {
@@ -77,5 +78,34 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
     return res.status(201).json({ message: 'Movie added successfully' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
+  }
+}
+
+export const getAllMovies = async (
+  req: RequestQuery<{ userId: string }>,
+  res: Response
+) => {
+  try {
+    const { userId } = req.query
+
+    const existingUser = await User.findById(userId)
+
+    if (!userId || userId.length !== 24) {
+      return res.status(404).json({ message: 'Enter valid userId' })
+    }
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const movies = await Movie.find({
+      userId: new mongoose.Types.ObjectId(userId),
+    })
+
+    return res.status(200).json(movies)
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
   }
 }
