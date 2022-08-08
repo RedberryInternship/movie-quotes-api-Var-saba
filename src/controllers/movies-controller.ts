@@ -38,6 +38,7 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       director_ge,
       film_genres,
       budget,
+      userId,
     } = req.body
 
     if (!req.file) {
@@ -66,6 +67,7 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       director_ge,
       film_genres,
       budget,
+      userId,
     })
 
     newMovie.image = imagePathDb

@@ -611,6 +611,8 @@ paths:
                   type: string
                 budget:
                   type: number
+                userId:
+                  type: string
                 film_genres[]:
                   type: array
                   items:
@@ -628,6 +630,7 @@ paths:
               director_en: 'Director'
               director_ge: 'რეჟისორი'
               budget: 999999999
+              userId: 62e934bdfc8d986260667984
       responses:
         '201':
           description: Movie added

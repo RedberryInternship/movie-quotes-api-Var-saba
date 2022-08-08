@@ -18,6 +18,11 @@ const movieSchema = new Schema<MovieModel>({
     unique: true,
   },
 
+  userId: {
+    type: String,
+    required: true,
+  },
+
   budget: {
     type: Number,
     required: true,

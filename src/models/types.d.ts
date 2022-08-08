@@ -16,4 +16,5 @@ export type MovieModel = {
   director_ge: string
   image?: string
   budget: number
+  userId: string
 }
