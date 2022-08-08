@@ -42,14 +42,14 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       userId,
     } = req.body
 
+    const imagePathDb = `images/movies/${req.file?.filename}`
+
     if (!req.file) {
       return res.status(422).json({ message: 'Upload movie image' })
     }
 
     const existingMovieEn = await Movie.findOne({ movie_name_en })
     const existingMovieGe = await Movie.findOne({ movie_name_ge })
-
-    const imagePathDb = `images/movies/${req.file?.filename}`
 
     if (existingMovieEn || existingMovieGe) {
       if (fs.existsSync(`public/${imagePathDb}`)) {

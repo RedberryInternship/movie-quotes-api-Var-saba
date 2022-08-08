@@ -652,20 +652,28 @@ paths:
               properties:
                 movie_name_en:
                   type: string
+                  example: Movie name
                 movie_name_ge:
                   type: string
+                  example: ფილმის სახელი
                 movie_description_en:
                   type: string
+                  example: Movie description
                 movie_description_ge:
                   type: string
+                  example: ფილმის აღწერა
                 director_en:
                   type: string
+                  example: Director
                 director_ge:
                   type: string
+                  example: რეჟისორი
                 budget:
                   type: number
+                  example: 3200000
                 userId:
                   type: string
+                  example: 62e934bdfc8d986260667984
                 film_genres[]:
                   type: array
                   items:
@@ -675,15 +683,6 @@ paths:
                 image:
                   type: string
                   format: binary
-            example:
-              movie_name_en: 'Movie name'
-              movie_name_ge: 'ფილმის სახელი'
-              movie_description_en: 'Movie description'
-              movie_description_ge: 'ფილმის აღწერა'
-              director_en: 'Director'
-              director_ge: 'რეჟისორი'
-              budget: 999999999
-              userId: 62e934bdfc8d986260667984
       responses:
         '201':
           description: Movie added
