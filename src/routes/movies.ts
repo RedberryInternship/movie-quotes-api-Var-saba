@@ -1,21 +1,19 @@
-import { getFilmGenres, addMovie, uploadMovieImg } from 'controllers'
+import { getFilmGenres, addMovie } from 'controllers'
 import { validateRequestSchema } from 'middlewares'
-import { movieSchema, idSchema } from 'schemas'
 import { uploadMovieImage } from 'utils'
+import { movieSchema } from 'schemas'
 import express from 'express'
 
 const router = express.Router()
 
 router.get('/film-genres', getFilmGenres)
 
-router.post('/add-movie', movieSchema, validateRequestSchema, addMovie)
-
-router.patch(
-  '/upload-movie-image',
+router.post(
+  '/add-movie',
   uploadMovieImage,
-  idSchema,
+  movieSchema,
   validateRequestSchema,
-  uploadMovieImg
+  addMovie
 )
 
 export default router
