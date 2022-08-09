@@ -123,6 +123,6 @@ export const deleteMovie = async (req: QueryId, res: Response) => {
     await Movie.deleteOne(id)
     return res.status(200).json({ message: 'Movie deleted successfully' })
   } catch (error: any) {
-    return res.status(500).json({ message: 'Enter valid id' })
+    return res.status(422).json({ message: 'Enter valid id' })
   }
 }

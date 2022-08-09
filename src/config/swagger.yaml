@@ -712,3 +712,41 @@ paths:
           description: Unprocessed Entity
         '500':
           description: Internal server error
+
+  /delete-movie:
+    delete:
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Movie
+      description: Delete movie
+      responses:
+        '200':
+          description: Movie deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie deleted successfully
+        '404':
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie not found
+        '422':
+          description: Unprocessed Entity
