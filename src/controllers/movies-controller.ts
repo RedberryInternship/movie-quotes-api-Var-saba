@@ -1,4 +1,4 @@
-import { Response, RequestBody, RequestQuery } from 'types.d'
+import { Response, RequestBody, RequestQuery, QueryId } from 'types.d'
 import { MovieModel, Movie, User } from 'models'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
@@ -103,5 +103,26 @@ export const getAllMovies = async (
     return res.status(422).json({
       message: 'Provided userId is invalid',
     })
+  }
+}
+
+export const deleteMovie = async (req: QueryId, res: Response) => {
+  try {
+    const id = { _id: new mongoose.Types.ObjectId(req.query.id) }
+
+    const movie = await Movie.findOne(id)
+
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' })
+    }
+
+    if (movie.image) {
+      deleteFile(`public/${movie.image}`)
+    }
+
+    await Movie.deleteOne(id)
+    return res.status(200).json({ message: 'Movie deleted successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ message: 'Enter valid id' })
   }
 }

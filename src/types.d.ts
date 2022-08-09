@@ -25,3 +25,9 @@ export type AuthorizationReq = {
   password: string
   email: string
 }
+
+export type QueryId = {
+  query: {
+    id: string
+  }
+}
