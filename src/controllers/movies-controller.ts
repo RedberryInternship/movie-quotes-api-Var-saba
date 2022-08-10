@@ -170,8 +170,10 @@ export const changeMovie = async (
     existingMovie.budget = budget
     await existingMovie.save()
 
-    return res.status(201).json({ message: 'Movie changed successfully' })
+    return res.status(200).json({ message: 'Movie changed successfully' })
   } catch (error: any) {
-    return res.status(500).json({ message: error.message })
+    return res
+      .status(409)
+      .json({ message: 'Movie with this name is already added' })
   }
 }

@@ -713,6 +713,92 @@ paths:
         '500':
           description: Internal server error
 
+  /change-movie:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Movie
+      description: Change movie
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movie_name_en:
+                  type: string
+                  example: Movie name
+                movie_name_ge:
+                  type: string
+                  example: ფილმის სახელი
+                movie_description_en:
+                  type: string
+                  example: Movie description
+                movie_description_ge:
+                  type: string
+                  example: ფილმის აღწერა
+                director_en:
+                  type: string
+                  example: Director
+                director_ge:
+                  type: string
+                  example: რეჟისორი
+                budget:
+                  type: number
+                  example: 3200000
+                id:
+                  type: string
+                  example: 62e934bdfc8d986260667984
+                film_genres[]:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Adventure
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Movie changed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  movieId:
+                    type: string
+                example:
+                  message: Movie added successfully
+        '404':
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie not found
+        '409':
+          description: Movie is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie with this name is already added
+        '422':
+          description: Unprocessed Entity
+
   /delete-movie:
     delete:
       parameters:

@@ -41,8 +41,6 @@ export const multerFilter = (model: Model, text: string) => {
           ) {
             deleteFile(`public/${currentDoc?.image}`)
           }
-
-          cb(null, true)
         }
       }
 
