@@ -1,5 +1,6 @@
 import { Response, RequestBody, RequestQuery, QueryId } from 'types.d'
 import { MovieModel, Movie, User } from 'models'
+import { ChangeMovieReq } from './types.d'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -42,11 +43,11 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       userId,
     } = req.body
 
-    const imagePathDb = `images/movies/${req.file?.filename}`
-
     if (!req.file) {
       return res.status(422).json({ message: 'Upload movie image' })
     }
+
+    const imagePathDb = `images/movies/${req.file?.filename}`
 
     const existingMovieEn = await Movie.findOne({ movie_name_en })
     const existingMovieGe = await Movie.findOne({ movie_name_ge })
@@ -124,5 +125,53 @@ export const deleteMovie = async (req: QueryId, res: Response) => {
     return res.status(200).json({ message: 'Movie deleted successfully' })
   } catch (error: any) {
     return res.status(422).json({ message: 'Enter valid id' })
+  }
+}
+
+export const changeMovie = async (
+  req: RequestBody<ChangeMovieReq>,
+  res: Response
+) => {
+  try {
+    const {
+      movie_description_en,
+      movie_description_ge,
+      movie_name_en,
+      movie_name_ge,
+      director_en,
+      director_ge,
+      film_genres,
+      budget,
+      id,
+    } = req.body
+
+    if (!req.file) {
+      return res.status(422).json({ message: 'Upload movie image' })
+    }
+
+    const existingMovie = await Movie.findById(id)
+
+    if (!existingMovie) {
+      return res.status(404).json({ message: 'Movie not found' })
+    }
+
+    if (fs.existsSync(`public/${existingMovie.image}`)) {
+      deleteFile(`public/${existingMovie.image}`)
+    }
+
+    existingMovie.image = `images/movies/${req.file?.filename}`
+    existingMovie.movie_description_en = movie_description_en
+    existingMovie.movie_description_ge = movie_description_ge
+    existingMovie.movie_name_en = movie_name_en
+    existingMovie.movie_name_ge = movie_name_ge
+    existingMovie.director_en = director_en
+    existingMovie.director_ge = director_ge
+    existingMovie.film_genres = film_genres
+    existingMovie.budget = budget
+    await existingMovie.save()
+
+    return res.status(201).json({ message: 'Movie changed successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }

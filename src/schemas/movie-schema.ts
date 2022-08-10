@@ -37,12 +37,6 @@ const movieSchema = [
     .isNumeric()
     .withMessage('Budget must be a number'),
 
-  check('userId')
-    .trim()
-    .exists()
-    .isLength({ min: 24, max: 24 })
-    .withMessage('User id should include 24 characters'),
-
   check('film_genres')
     .exists()
     .isArray()
