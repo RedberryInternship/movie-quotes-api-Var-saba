@@ -4,11 +4,22 @@ import express, { RequestHandler } from 'express'
 import SwaggerUI from 'swagger-ui-express'
 import { connectToMongo } from 'config'
 import bodyParser from 'body-parser'
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import { socket } from 'utils'
 import dotenv from 'dotenv'
 import cors from 'cors'
 
 const server = express()
 server.use(cors())
+
+const httpServer = createServer(server)
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: [process.env.FRONTEND_URI!],
+  },
+})
 
 dotenv.config()
 connectToMongo()
@@ -25,8 +36,9 @@ server.use(userRouter)
 
 server.use(moviesRouter)
 
-server.listen(process.env.SERVER_PORT, () => {
+httpServer.listen(process.env.SERVER_PORT, () => {
   console.log(
     `server listening on port http://localhost:${process.env.SERVER_PORT}`
   )
+  socket({ io })
 })
