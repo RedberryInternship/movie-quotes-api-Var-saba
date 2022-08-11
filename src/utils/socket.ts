@@ -6,20 +6,24 @@ const EVENTS = {
   movies: {
     on: {
       ADD_MOVIE: 'ADD_MOVIE',
+      UPDATE_MOVIE: 'UPDATE_MOVIE',
     },
 
     emit: {
       SEND_NEW_MOVIE: 'SEND_NEW_MOVIE',
+      SEND_UPDATED_MOVIE: 'SEND_UPDATED_MOVIE',
     },
   },
 }
 
 const socket = ({ io }: { io: Server }) => {
   io.on(EVENTS.connection, (socket: Socket) => {
-    console.log(`user connected ${socket.id}`)
+    socket.on(EVENTS.movies.on.ADD_MOVIE, (newMovie) => {
+      socket.emit(EVENTS.movies.emit.SEND_NEW_MOVIE, newMovie)
+    })
 
-    socket.on(EVENTS.movies.on.ADD_MOVIE, (newMovieData) => {
-      socket.emit(EVENTS.movies.emit.SEND_NEW_MOVIE, newMovieData)
+    socket.on(EVENTS.movies.on.UPDATE_MOVIE, (updatedMovie) => {
+      socket.emit(EVENTS.movies.emit.SEND_UPDATED_MOVIE, updatedMovie)
     })
   })
 }

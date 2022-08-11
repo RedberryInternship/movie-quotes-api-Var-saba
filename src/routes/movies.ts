@@ -12,11 +12,11 @@ import {
 
 const router = express.Router()
 
+router.delete('/delete-movie', idSchema, validateRequestSchema, deleteMovie)
+
 router.get('/film-genres', getFilmGenres)
 
 router.get('/all-movies', getAllMovies)
-
-router.delete('/delete-movie', idSchema, validateRequestSchema, deleteMovie)
 
 router.post(
   '/add-movie',

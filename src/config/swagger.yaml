@@ -751,18 +751,7 @@ paths:
                   format: binary
       responses:
         '200':
-          description: Movie changed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  movieId:
-                    type: string
-                example:
-                  message: Movie added successfully
+          description: Movie added successfully
         '404':
           description: Movie not found
           content:
