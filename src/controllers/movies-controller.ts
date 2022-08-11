@@ -145,21 +145,18 @@ export const changeMovie = async (
       id,
     } = req.body
 
-    if (!req.file) {
-      return res.status(422).json({ message: 'Upload movie image' })
-    }
-
     const existingMovie = await Movie.findById(id)
 
     if (!existingMovie) {
       return res.status(404).json({ message: 'Movie not found' })
     }
 
-    if (fs.existsSync(`public/${existingMovie.image}`)) {
-      deleteFile(`public/${existingMovie.image}`)
+    if (req.file) {
+      if (fs.existsSync(`public/${existingMovie.image}`)) {
+        deleteFile(`public/${existingMovie.image}`)
+      }
+      existingMovie.image = `images/movies/${req.file?.filename}`
     }
-
-    existingMovie.image = `images/movies/${req.file?.filename}`
     existingMovie.movie_description_en = movie_description_en
     existingMovie.movie_description_ge = movie_description_ge
     existingMovie.movie_name_en = movie_name_en

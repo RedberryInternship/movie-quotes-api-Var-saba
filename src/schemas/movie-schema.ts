@@ -55,7 +55,6 @@ const movieSchema = [
         'Sports',
         'Drama',
       ]
-
       for (let i = 0; i < arr.length; i++) {
         if (!filmGenres.includes(arr[i])) {
           return false
