@@ -17,7 +17,7 @@ const httpServer = createServer(server)
 
 const io = new Server(httpServer, {
   cors: {
-    origin: [process.env.FRONTEND_URI!],
+    origin: '*',
   },
 })
 

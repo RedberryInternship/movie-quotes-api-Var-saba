@@ -685,18 +685,7 @@ paths:
                   format: binary
       responses:
         '201':
-          description: Movie added
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  movieId:
-                    type: string
-                example:
-                  message: Movie added successfully
+          description: Movie added successfully
         '409':
           description: Movie is already added
           content:

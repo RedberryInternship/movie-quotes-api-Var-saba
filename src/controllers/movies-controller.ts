@@ -76,7 +76,9 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
 
     await newMovie.save()
 
-    return res.status(201).json({ message: 'Movie added successfully' })
+    return res
+      .status(201)
+      .json(newMovie)
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
