@@ -7,15 +7,11 @@ const movieSchema = new Schema<MovieModel>({
   movieNameEn: {
     type: String,
     required: true,
-    trim: true,
-    unique: true,
   },
 
   movieNameGe: {
     type: String,
     required: true,
-    trim: true,
-    unique: true,
   },
 
   userId: {

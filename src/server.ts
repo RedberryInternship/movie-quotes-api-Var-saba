@@ -2,6 +2,7 @@ import { swaggerMiddleware, authMiddleware } from 'middlewares'
 import { userRouter, authRouter, moviesRouter } from 'routes'
 import express, { RequestHandler } from 'express'
 import SwaggerUI from 'swagger-ui-express'
+import cookieParser from 'cookie-parser'
 import { connectToMongo } from 'config'
 import bodyParser from 'body-parser'
 import { createServer } from 'http'
@@ -25,11 +26,12 @@ dotenv.config()
 connectToMongo()
 
 server.use(bodyParser.json())
+server.use(cookieParser())
 server.use('/api-docs', SwaggerUI.serve, swaggerMiddleware())
 
-server.use(express.static('public'))
-
 server.use(authMiddleware as RequestHandler)
+
+server.use(express.static('public'))
 
 server.use(authRouter)
 server.use(userRouter)

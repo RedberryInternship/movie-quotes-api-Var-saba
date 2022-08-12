@@ -50,7 +50,6 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       if (fs.existsSync(`public/${imagePathDb}`)) {
         deleteFile(`public/${imagePathDb}`)
       }
-
       return res.status(409).json({ message: 'Movie is already added' })
     }
 
