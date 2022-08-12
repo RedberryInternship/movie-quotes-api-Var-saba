@@ -1,3 +1,4 @@
+export { default as languageValidation } from './languageValidation'
 export { default as generateEmail } from './generateEmail'
 export { default as isLowercase } from './isLowercase'
 export { default as deleteFile } from './deleteFile'

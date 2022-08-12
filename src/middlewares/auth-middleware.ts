@@ -7,12 +7,12 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
     const url = req.url
 
     if (
+      url.includes('/activate-account') ||
       url.includes('/register-user') ||
-      url.includes('/google-auth') ||
-      url.includes('/verify-email') ||
       url.includes('/authorization') ||
+      url.includes('/verify-email') ||
       url.includes('/movie-genres') ||
-      url.includes('/activate-account')
+      url.includes('/google-auth')
     ) {
       return next()
     } else {

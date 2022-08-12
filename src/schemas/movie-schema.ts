@@ -1,35 +1,60 @@
+import { languageValidation } from 'utils'
 import { check } from 'express-validator'
 
 const movieSchema = [
   check('movieDescriptionEn')
     .exists()
     .notEmpty()
-    .withMessage('Movie description in English is required'),
+    .withMessage('Movie description in English is required')
+    .custom((value) => {
+      return languageValidation(value, 'en')
+    })
+    .withMessage('Enter English characters and symbols'),
 
   check('movieDescriptionGe')
     .exists()
     .notEmpty()
-    .withMessage('Movie description in Georgian is required'),
+    .withMessage('Movie description in Georgian is required')
+    .custom((value) => {
+      return languageValidation(value, 'ge')
+    })
+    .withMessage('Enter Georgian characters and symbols'),
 
   check('movieNameGe')
     .exists()
     .notEmpty()
-    .withMessage('Movie name in Georgian is required'),
+    .withMessage('Movie name in Georgian is required')
+    .custom((value) => {
+      return languageValidation(value, 'ge')
+    })
+    .withMessage('Enter Georgian characters and symbols'),
 
   check('movieNameEn')
     .exists()
     .notEmpty()
-    .withMessage('Movie name in English is required'),
+    .withMessage('Movie name in English is required')
+    .custom((value) => {
+      return languageValidation(value, 'en')
+    })
+    .withMessage('Enter English characters and symbols'),
 
   check('directorEn')
     .exists()
     .notEmpty()
-    .withMessage('Director name in English is required'),
+    .withMessage('Director name in English is required')
+    .custom((value) => {
+      return languageValidation(value, 'en')
+    })
+    .withMessage('Enter English characters and symbols'),
 
   check('directorGe')
     .exists()
     .notEmpty()
-    .withMessage('Director name in Georgian is required'),
+    .withMessage('Director name is required')
+    .custom((value) => {
+      return languageValidation(value, 'ge')
+    })
+    .withMessage('Enter Georgian characters and symbols'),
 
   check('budget')
     .exists()
