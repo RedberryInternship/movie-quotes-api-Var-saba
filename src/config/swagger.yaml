@@ -650,22 +650,22 @@ paths:
             schema:
               type: object
               properties:
-                movie_name_en:
+                movieNameEn:
                   type: string
                   example: Movie name
-                movie_name_ge:
+                movieNameGe:
                   type: string
                   example: ფილმის სახელი
-                movie_description_en:
+                movieDescriptionEn:
                   type: string
                   example: Movie description
-                movie_description_ge:
+                movieDescriptionGe:
                   type: string
                   example: ფილმის აღწერა
-                director_en:
+                directorEn:
                   type: string
                   example: Director
-                director_ge:
+                directorGe:
                   type: string
                   example: რეჟისორი
                 budget:
@@ -674,7 +674,7 @@ paths:
                 userId:
                   type: string
                   example: 62e934bdfc8d986260667984
-                film_genres[]:
+                movieGenres[]:
                   type: array
                   items:
                     type: string
@@ -716,22 +716,22 @@ paths:
             schema:
               type: object
               properties:
-                movie_name_en:
+                movieNameEn:
                   type: string
                   example: Movie name
-                movie_name_ge:
+                movieNameGe:
                   type: string
                   example: ფილმის სახელი
-                movie_description_en:
+                movieDescriptionEn:
                   type: string
                   example: Movie description
-                movie_description_ge:
+                movieDescriptionGe:
                   type: string
                   example: ფილმის აღწერა
-                director_en:
+                directorEn:
                   type: string
                   example: Director
-                director_ge:
+                directorGe:
                   type: string
                   example: რეჟისორი
                 budget:
@@ -740,7 +740,7 @@ paths:
                 id:
                   type: string
                   example: 62e934bdfc8d986260667984
-                film_genres[]:
+                movieGenres[]:
                   type: array
                   items:
                     type: string

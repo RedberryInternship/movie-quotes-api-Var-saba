@@ -4,14 +4,14 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const movieSchema = new Schema<MovieModel>({
-  movie_name_en: {
+  movieNameEn: {
     type: String,
     required: true,
     trim: true,
     unique: true,
   },
 
-  movie_name_ge: {
+  movieNameGe: {
     type: String,
     required: true,
     trim: true,
@@ -28,7 +28,7 @@ const movieSchema = new Schema<MovieModel>({
     required: true,
   },
 
-  film_genres: [
+  movieGenres: [
     {
       type: String,
       required: true,
@@ -39,13 +39,13 @@ const movieSchema = new Schema<MovieModel>({
     type: String,
   },
 
-  movie_description_en: { type: String, required: true, trim: true },
+  movieDescriptionEn: { type: String, required: true, trim: true },
 
-  movie_description_ge: { type: String, required: true, trim: true },
+  movieDescriptionGe: { type: String, required: true, trim: true },
 
-  director_en: { type: String, required: true, trim: true },
+  directorEn: { type: String, required: true, trim: true },
 
-  director_ge: { type: String, required: true, trim: true },
+  directorGe: { type: String, required: true, trim: true },
 })
 
 const Movie = mongoose.model('movie', movieSchema)

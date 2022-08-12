@@ -1,32 +1,32 @@
 import { check } from 'express-validator'
 
 const movieSchema = [
-  check('movie_description_en')
+  check('movieDescriptionEn')
     .exists()
     .notEmpty()
     .withMessage('Movie description in English is required'),
 
-  check('movie_description_ge')
+  check('movieDescriptionGe')
     .exists()
     .notEmpty()
     .withMessage('Movie description in Georgian is required'),
 
-  check('movie_name_ge')
+  check('movieNameGe')
     .exists()
     .notEmpty()
     .withMessage('Movie name in Georgian is required'),
 
-  check('movie_name_en')
+  check('movieNameEn')
     .exists()
     .notEmpty()
     .withMessage('Movie name in English is required'),
 
-  check('director_en')
+  check('directorEn')
     .exists()
     .notEmpty()
     .withMessage('Director name in English is required'),
 
-  check('director_ge')
+  check('directorGe')
     .exists()
     .notEmpty()
     .withMessage('Director name in Georgian is required'),
@@ -37,12 +37,12 @@ const movieSchema = [
     .isNumeric()
     .withMessage('Budget must be a number'),
 
-  check('film_genres')
+  check('movieGenres')
     .exists()
     .isArray()
-    .withMessage('Film genres should be type of array with string values')
+    .withMessage('Movie genres should be type of array with string values')
     .custom((arr: string[]) => {
-      const filmGenres = [
+      const movieGenres = [
         'Adventure',
         'Musicals',
         'Romance',
@@ -56,7 +56,7 @@ const movieSchema = [
         'Drama',
       ]
       for (let i = 0; i < arr.length; i++) {
-        if (!filmGenres.includes(arr[i])) {
+        if (!movieGenres.includes(arr[i])) {
           return false
         }
       }
@@ -64,7 +64,7 @@ const movieSchema = [
       return true
     })
     .withMessage(
-      'Film Genres should be array of strings and contain only following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
+      'Movie Genres should be array of strings and contain only following genres: Adventure, Musicals, Romance, Fantasy, Romance, Mystery, Action, Comedy, Horror, Sports, Drama.'
     ),
 ]
 

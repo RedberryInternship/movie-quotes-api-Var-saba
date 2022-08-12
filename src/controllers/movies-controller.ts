@@ -32,13 +32,13 @@ export const getFilmGenres = async (_, res: Response) => {
 export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
   try {
     const {
-      movie_description_ge,
-      movie_description_en,
-      movie_name_en,
-      movie_name_ge,
-      director_en,
-      director_ge,
-      film_genres,
+      movieDescriptionGe,
+      movieDescriptionEn,
+      movieNameEn,
+      movieNameGe,
+      directorEn,
+      directorGe,
+      movieGenres,
       budget,
       userId,
     } = req.body
@@ -49,8 +49,8 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
 
     const imagePathDb = `images/movies/${req.file?.filename}`
 
-    const existingMovieEn = await Movie.findOne({ movie_name_en })
-    const existingMovieGe = await Movie.findOne({ movie_name_ge })
+    const existingMovieEn = await Movie.findOne({ movieNameEn })
+    const existingMovieGe = await Movie.findOne({ movieNameGe })
 
     if (existingMovieEn || existingMovieGe) {
       if (fs.existsSync(`public/${imagePathDb}`)) {
@@ -61,13 +61,13 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
     }
 
     const newMovie = await Movie.create({
-      movie_description_ge,
-      movie_description_en,
-      movie_name_en,
-      movie_name_ge,
-      director_en,
-      director_ge,
-      film_genres,
+      movieDescriptionGe,
+      movieDescriptionEn,
+      movieNameEn,
+      movieNameGe,
+      directorEn,
+      directorGe,
+      movieGenres,
       budget,
       userId,
     })
@@ -76,9 +76,7 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
 
     await newMovie.save()
 
-    return res
-      .status(201)
-      .json(newMovie)
+    return res.status(201).json(newMovie)
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
@@ -136,13 +134,13 @@ export const changeMovie = async (
 ) => {
   try {
     const {
-      movie_description_en,
-      movie_description_ge,
-      movie_name_en,
-      movie_name_ge,
-      director_en,
-      director_ge,
-      film_genres,
+      movieDescriptionEn,
+      movieDescriptionGe,
+      movieNameEn,
+      movieNameGe,
+      directorEn,
+      directorGe,
+      movieGenres,
       budget,
       id,
     } = req.body
@@ -159,13 +157,13 @@ export const changeMovie = async (
       }
       existingMovie.image = `images/movies/${req.file?.filename}`
     }
-    existingMovie.movie_description_en = movie_description_en
-    existingMovie.movie_description_ge = movie_description_ge
-    existingMovie.movie_name_en = movie_name_en
-    existingMovie.movie_name_ge = movie_name_ge
-    existingMovie.director_en = director_en
-    existingMovie.director_ge = director_ge
-    existingMovie.film_genres = film_genres
+    existingMovie.movieDescriptionEn = movieDescriptionEn
+    existingMovie.movieDescriptionGe = movieDescriptionGe
+    existingMovie.movieNameEn = movieNameEn
+    existingMovie.movieNameGe = movieNameGe
+    existingMovie.directorEn = directorEn
+    existingMovie.directorGe = directorGe
+    existingMovie.movieGenres = movieGenres
     existingMovie.budget = budget
     await existingMovie.save()
 
