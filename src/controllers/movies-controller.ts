@@ -5,7 +5,7 @@ import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
 
-export const getFilmGenres = async (_, res: Response) => {
+export const getMovieGenres = async (_, res: Response) => {
   try {
     const filmGenres = [
       'Adventure',

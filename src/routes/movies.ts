@@ -3,7 +3,7 @@ import { validateRequestSchema } from 'middlewares'
 import { uploadMovieImage } from 'utils'
 import express from 'express'
 import {
-  getFilmGenres,
+  getMovieGenres,
   getAllMovies,
   deleteMovie,
   changeMovie,
@@ -14,7 +14,7 @@ const router = express.Router()
 
 router.delete('/delete-movie', idSchema, validateRequestSchema, deleteMovie)
 
-router.get('/film-genres', getFilmGenres)
+router.get('/film-genres', getMovieGenres)
 
 router.get('/all-movies', getAllMovies)
 
