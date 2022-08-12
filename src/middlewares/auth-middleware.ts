@@ -11,7 +11,7 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
       url.includes('/google-auth') ||
       url.includes('/verify-email') ||
       url.includes('/authorization') ||
-      url.includes('/film-genres') ||
+      url.includes('/movie-genres') ||
       url.includes('/activate-account')
     ) {
       return next()

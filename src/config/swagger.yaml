@@ -552,14 +552,14 @@ paths:
           description: Internal Server Error.
 
   # Movie
-  /film-genres:
+  /movie-genres:
     get:
       tags:
         - Movie
-      description: Fetch Film genres
+      description: Fetch movie genres
       responses:
         '200':
-          description: Film genres fetched successfully
+          description: Movie genres fetched successfully
           content:
             application/json:
               schema:
@@ -580,8 +580,6 @@ paths:
                   'Sports',
                   'Drama',
                 ]
-        '500':
-          description: Internal server error
 
   /all-movies:
     get:

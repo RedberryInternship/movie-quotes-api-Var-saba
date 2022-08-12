@@ -14,7 +14,7 @@ const router = express.Router()
 
 router.delete('/delete-movie', idSchema, validateRequestSchema, deleteMovie)
 
-router.get('/film-genres', getMovieGenres)
+router.get('/movie-genres', getMovieGenres)
 
 router.get('/all-movies', getAllMovies)
 

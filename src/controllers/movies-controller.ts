@@ -6,27 +6,21 @@ import mongoose from 'mongoose'
 import fs from 'fs'
 
 export const getMovieGenres = async (_, res: Response) => {
-  try {
-    const filmGenres = [
-      'Adventure',
-      'Musicals',
-      'Romance',
-      'Fantasy',
-      'Romance',
-      'Mystery',
-      'Action',
-      'Comedy',
-      'Horror',
-      'Sports',
-      'Drama',
-    ]
+  const movieGenres = [
+    'Adventure',
+    'Musicals',
+    'Romance',
+    'Fantasy',
+    'Romance',
+    'Mystery',
+    'Action',
+    'Comedy',
+    'Horror',
+    'Sports',
+    'Drama',
+  ]
 
-    return res.status(200).json(filmGenres)
-  } catch (error: any) {
-    return res.status(500).json({
-      message: error.message,
-    })
-  }
+  return res.status(200).json(movieGenres)
 }
 
 export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
