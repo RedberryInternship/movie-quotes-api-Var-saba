@@ -52,7 +52,6 @@ export const uploadUserImg = async (
   res: Response
 ) => {
   try {
-    console.log(req.body.id)
     const currentUser = await User.findById(req.body.id)
     if (!currentUser) {
       return res.status(404).json({ message: 'User not found' })
