@@ -1,4 +1,6 @@
-.vscode
+/public/images/movies*
+/public/images/users*
 /node_modules
-.env
+.vscode
 /build
+.env

@@ -5,3 +5,16 @@ export type UserModel = {
   email: string
   name: string
 }
+
+export type MovieModel = {
+  movieDescriptionEn: string
+  movieDescriptionGe: string
+  movieNameEn: string
+  movieNameGe: string
+  movieGenres: string[]
+  directorEn: string
+  directorGe: string
+  image?: string
+  budget: number
+  userId: string
+}

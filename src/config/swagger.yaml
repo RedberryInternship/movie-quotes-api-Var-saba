@@ -550,3 +550,265 @@ paths:
           description: Unprocessed Entity
         '500':
           description: Internal Server Error.
+
+  # Movie
+  /movie-genres:
+    get:
+      tags:
+        - Movie
+      description: Fetch movie genres
+      responses:
+        '200':
+          description: Movie genres fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                [
+                  'Adventure',
+                  'Musicals',
+                  'Romance',
+                  'Fantasy',
+                  'Romance',
+                  'Mystery',
+                  'Action',
+                  'Comedy',
+                  'Horror',
+                  'Sports',
+                  'Drama',
+                ]
+
+  /all-movies:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: Enter mongodb id of certain user
+      tags:
+        - Movie
+      description: Fetch all movies added by user
+      responses:
+        '200':
+          description: Movies fetched successfully
+        '401':
+          description: User is not authorized
+        '403':
+          description: Authorization header does not include valid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Token is not valid
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Provided userId is invalid
+
+  /add-movie:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Movie
+      description: Add new movie
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movieNameEn:
+                  type: string
+                  example: Movie name
+                movieNameGe:
+                  type: string
+                  example: ფილმის სახელი
+                movieDescriptionEn:
+                  type: string
+                  example: Movie description
+                movieDescriptionGe:
+                  type: string
+                  example: ფილმის აღწერა
+                directorEn:
+                  type: string
+                  example: Director
+                directorGe:
+                  type: string
+                  example: რეჟისორი
+                budget:
+                  type: number
+                  example: 3200000
+                userId:
+                  type: string
+                  example: 62e934bdfc8d986260667984
+                movieGenres[]:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Adventure
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Movie added successfully
+        '409':
+          description: Movie is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie is already added
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal server error
+
+  /change-movie:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Movie
+      description: Change movie
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movieNameEn:
+                  type: string
+                  example: Movie name
+                movieNameGe:
+                  type: string
+                  example: ფილმის სახელი
+                movieDescriptionEn:
+                  type: string
+                  example: Movie description
+                movieDescriptionGe:
+                  type: string
+                  example: ფილმის აღწერა
+                directorEn:
+                  type: string
+                  example: Director
+                directorGe:
+                  type: string
+                  example: რეჟისორი
+                budget:
+                  type: number
+                  example: 3200000
+                id:
+                  type: string
+                  example: 62e934bdfc8d986260667984
+                movieGenres[]:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - Adventure
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Movie added successfully
+        '404':
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie not found
+        '409':
+          description: Movie is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie with this name is already added
+        '422':
+          description: Unprocessed Entity
+
+  /delete-movie:
+    delete:
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Movie
+      description: Delete movie
+      responses:
+        '200':
+          description: Movie deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie deleted successfully
+        '404':
+          description: Movie not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie not found
+        '422':
+          description: Unprocessed Entity

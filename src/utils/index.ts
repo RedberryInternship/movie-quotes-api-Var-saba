@@ -1,6 +1,8 @@
+export { default as languageValidation } from './languageValidation'
 export { default as generateEmail } from './generateEmail'
 export { default as isLowercase } from './isLowercase'
 export { default as deleteFile } from './deleteFile'
 export { default as emailData } from './emailData'
+export { default as socket } from './socket'
 export * from './multerProperties'
 export * from './storage'

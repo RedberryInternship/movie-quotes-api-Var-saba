@@ -7,17 +7,21 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
     const url = req.url
 
     if (
+      url.includes('/activate-account') ||
       url.includes('/register-user') ||
-      url.includes('/google-auth') ||
-      url.includes('/verify-email') ||
       url.includes('/authorization') ||
-      url.includes('/activate-account')
+      url.includes('/verify-email') ||
+      url.includes('/movie-genres') ||
+      url.includes('/google-auth')
     ) {
       return next()
     } else {
       const secretText = process.env.JWT_SECRET
+      let token = 'JWT token'
 
-      if (secretText) {
+      if (url.includes('/images')) {
+        token = req.cookies.token
+      } else {
         const { authorization } = req.headers
 
         if (!authorization) {
@@ -26,17 +30,17 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
           })
         }
 
-        const token = authorization.trim().split(' ')[1]
-
-        let verified: string | JwtPayload
-        verified = jwt.verify(token, secretText)
-
-        if (verified) {
-          return next()
-        }
-
-        return res.status(401).json({ message: 'User is not authorized' })
+        token = authorization.trim().split(' ')[1]
       }
+
+      let verified: string | JwtPayload
+      verified = jwt.verify(token, secretText!)
+
+      if (verified) {
+        return next()
+      }
+
+      return res.status(401).json({ message: 'User is not authorized' })
     }
   } catch (error: any) {
     return res.status(403).json({ message: 'Token is not valid' })

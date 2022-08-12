@@ -36,3 +36,15 @@ export type NewEmailReq = {
   userId: string
   token: string
 }
+
+export type ChangeMovieReq = {
+  movieDescriptionEn: string
+  movieDescriptionGe: string
+  movieNameEn: string
+  movieNameGe: string
+  movieGenres: string[]
+  directorEn: string
+  directorGe: string
+  budget: number
+  id: string
+}

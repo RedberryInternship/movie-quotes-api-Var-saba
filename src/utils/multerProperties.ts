@@ -9,9 +9,9 @@ export const multerStorage: StorageFunction = (location: string) => {
       cb(null, `public/images/${location}`)
     },
 
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
       const ext = file.mimetype.split('/')[1]
-      cb(null, `${req.body.id}-${new Date().toISOString()}.${ext}`)
+      cb(null, `${new Date().toISOString()}.${ext}`)
     },
   })
 
@@ -21,31 +21,37 @@ export const multerStorage: StorageFunction = (location: string) => {
 export const multerFilter = (model: Model, text: string) => {
   const filter = async (req: FilterReq, file: File, cb: Callback) => {
     try {
-      if (req.body.id.length !== 24) {
-        req.body.fileValidationError = 'id უნდა შეიცავდეს 24 სიმბოლოს'
-        return cb(null, false, req.body.fileValidationError)
-      }
-
-      const currentDoc = await model.findById(req.body.id)
-      if (!currentDoc) {
-        req.body.fileValidationError = `${text} ვერ მოიძებნა`
-        return cb(null, false, req.body.fileValidationError)
-      }
-
-      if (file.mimetype.startsWith('image') && currentDoc) {
-        if (fs.existsSync(`public/${currentDoc?.image}`) && currentDoc.image) {
-          deleteFile(`public/${currentDoc?.image}`)
+      if (req.body.id) {
+        if (req.body.id.length !== 24) {
+          req.body.fileValidationError = 'id should contain 24 characters'
+          return cb(null, false, req.body.fileValidationError)
         }
 
-        cb(null, true)
+        const currentDoc = await model.findById(req.body.id)
+
+        if (!currentDoc) {
+          req.body.fileValidationError = `${text} not found`
+          return cb(null, false, req.body.fileValidationError)
+        }
+
+        if (file.mimetype.startsWith('image') && currentDoc) {
+          if (
+            fs.existsSync(`public/${currentDoc?.image}`) &&
+            currentDoc.image
+          ) {
+            deleteFile(`public/${currentDoc?.image}`)
+          }
+        }
       }
 
       if (!file.mimetype.startsWith('image')) {
-        req.body.fileValidationError = 'ატვირთეთ მხოლოდ სურათი!'
+        req.body.fileValidationError = 'Upload only image'
         return cb(null, false, req.body.fileValidationError)
       }
+
+      cb(null, true)
     } catch (error: any) {
-      return (req.body.fileValidationError = 'სურათი ვერ აიტვირთა!')
+      return (req.body.fileValidationError = 'Image upload failed')
     }
   }
 
