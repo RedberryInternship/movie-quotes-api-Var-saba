@@ -92,7 +92,7 @@ export const getAllMovies = async (
       userId: new mongoose.Types.ObjectId(userId),
     }).populate({
       path: 'quotes',
-      select: '-movieId -user',
+      select: '-movieId',
     })
 
     return res.status(200).json(movies)
@@ -155,11 +155,11 @@ export const changeMovie = async (
     }
     existingMovie.movieDescriptionEn = movieDescriptionEn
     existingMovie.movieDescriptionGe = movieDescriptionGe
+    existingMovie.movieGenres = movieGenres
     existingMovie.movieNameEn = movieNameEn
     existingMovie.movieNameGe = movieNameGe
     existingMovie.directorEn = directorEn
     existingMovie.directorGe = directorGe
-    existingMovie.movieGenres = movieGenres
     existingMovie.budget = budget
     await existingMovie.save()
 

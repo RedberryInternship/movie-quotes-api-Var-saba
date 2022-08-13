@@ -10,12 +10,12 @@ const quoteSchema = new Schema<QuoteModel>(
       required: true,
     },
 
-    quoteNameEn: {
+    quoteEn: {
       type: String,
       required: true,
     },
 
-    quoteNameGe: {
+    quoteGe: {
       type: String,
       required: true,
     },

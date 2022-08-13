@@ -22,8 +22,8 @@ export type MovieModel = {
 
 export type QuoteModel = {
   comments: { user: object; commentText: string }[]
-  quoteNameEn: string
-  quoteNameGe: string
+  quoteEn: string
+  quoteGe: string
   movieId: string
   likes: number
   image: string

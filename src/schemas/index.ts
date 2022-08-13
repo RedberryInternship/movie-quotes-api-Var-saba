@@ -1,3 +1,4 @@
+export { default as changeQuoteSchema } from './change-quote-schema'
 export { default as googleUserSchema } from './google-user-schema'
 export { default as changeUserSchema } from './change-user-schema'
 export { default as passwordSchema } from './password-schema'

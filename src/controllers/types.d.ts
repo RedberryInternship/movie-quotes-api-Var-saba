@@ -48,3 +48,9 @@ export type ChangeMovieReq = {
   budget: number
   id: string
 }
+
+export type ChangeQuoteReq = {
+  quoteEn: string
+  quoteGe: string
+  id: string
+}
