@@ -42,6 +42,8 @@ const movieSchema = new Schema<MovieModel>({
   directorEn: { type: String, required: true, trim: true },
 
   directorGe: { type: String, required: true, trim: true },
+
+  quotes: [{ type: Schema.Types.ObjectId, ref: 'quote' }],
 })
 
 const Movie = mongoose.model('movie', movieSchema)

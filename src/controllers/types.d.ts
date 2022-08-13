@@ -33,7 +33,7 @@ export type ChangeMemberReq = {
 }
 
 export type NewEmailReq = {
-  userId: string
+  user: string
   token: string
 }
 
