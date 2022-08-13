@@ -90,6 +90,9 @@ export const getAllMovies = async (
 
     const movies = await Movie.find({
       userId: new mongoose.Types.ObjectId(userId),
+    }).populate({
+      path: 'quotes',
+      select: '-movieId -user',
     })
 
     return res.status(200).json(movies)

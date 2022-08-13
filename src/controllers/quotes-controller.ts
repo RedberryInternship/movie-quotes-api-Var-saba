@@ -30,7 +30,7 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
       return res.status(409).json({ message: 'Quote is already added' })
     }
 
-    const currentMovie = await Movie.findById(movieId).select('-__v -_id')
+    const currentMovie = await Movie.findById(movieId).select('-_id')
 
     if (currentMovie) {
       const newQuote = await Quote.create({
@@ -39,6 +39,7 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
         movieId,
         user,
       })
+
       newQuote.image = imagePathDb
 
       await newQuote.save()
@@ -51,7 +52,7 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
         },
       })
 
-      return res.status(201).json(newQuote.populate('user'))
+      return res.status(201).json(newQuote)
     }
 
     return res.status(404).json({ message: 'Movie not found' })
