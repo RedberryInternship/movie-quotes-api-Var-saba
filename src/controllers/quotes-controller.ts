@@ -1,5 +1,5 @@
+import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
-import { RequestBody, Response } from 'types.d'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -12,7 +12,7 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
       return res.status(422).json({ message: 'Upload quote image' })
     }
 
-    const imagePathDb = `images/movies/${req.file?.filename}`
+    const imagePathDb = `images/quotes/${req.file?.filename}`
 
     const existingQuoteEn = await Quote.findOne({ quoteNameEn })
     const existingQuoteGe = await Quote.findOne({ quoteNameGe })
@@ -58,5 +58,38 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
     return res.status(404).json({ message: 'Movie not found' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
+  }
+}
+
+export const deleteQuote = async (req: QueryId, res: Response) => {
+  try {
+    const id = { _id: new mongoose.Types.ObjectId(req.query.id) }
+
+    const quote = await Quote.findOne(id)
+
+    if (!quote) {
+      return res.status(404).json({ message: 'Quote not found' })
+    }
+
+    if (quote.image) {
+      deleteFile(`public/${quote.image}`)
+    }
+
+    await Movie.updateOne(
+      { quotes: id },
+      {
+        $pull: {
+          quotes: new mongoose.Types.ObjectId(quote.id),
+        },
+      }
+    )
+
+    await Quote.deleteOne(id)
+
+    return res.status(200).json({
+      message: 'quote deleted successfully',
+    })
+  } catch (error: any) {
+    return res.status(422).json({ message: 'Enter valid id' })
   }
 }

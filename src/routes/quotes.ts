@@ -1,10 +1,12 @@
 import { validateRequestSchema } from 'middlewares'
+import { addQuote, deleteQuote } from 'controllers'
+import { quoteSchema, idSchema } from 'schemas'
 import { uploadQuoteImage } from 'utils'
-import { addQuote } from 'controllers'
-import { quoteSchema } from 'schemas'
 import express from 'express'
 
 const router = express.Router()
+
+router.delete('/delete-quote', idSchema, validateRequestSchema, deleteQuote)
 
 router.post(
   '/add-quote',
