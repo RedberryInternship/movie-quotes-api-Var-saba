@@ -1,6 +1,7 @@
 export { default as changeQuoteSchema } from './change-quote-schema'
 export { default as googleUserSchema } from './google-user-schema'
 export { default as changeUserSchema } from './change-user-schema'
+export { default as newCommentSchema } from './new-comment-schema'
 export { default as passwordSchema } from './password-schema'
 export { default as userIdSchema } from './userId-schema'
 export { default as emailSchema } from './email-schema'

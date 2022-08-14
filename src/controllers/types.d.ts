@@ -54,3 +54,9 @@ export type ChangeQuoteReq = {
   quoteGe: string
   id: string
 }
+
+export type CommentReq = {
+  commentText: string
+  quoteId: string
+  userId: string
+}

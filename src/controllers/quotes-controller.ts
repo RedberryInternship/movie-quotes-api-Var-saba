@@ -1,6 +1,6 @@
 import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
-import { ChangeQuoteReq } from './types.d'
+import { ChangeQuoteReq, CommentReq } from './types.d'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -122,5 +122,45 @@ export const changeQuote = async (
     return res.status(200).json(existingQuote)
   } catch (error: any) {
     return res.status(409).json({ message: 'This quote is already added' })
+  }
+}
+
+export const commentOnQuote = async (
+  req: RequestBody<CommentReq>,
+  res: Response
+) => {
+  try {
+    const { commentText, quoteId, userId } = req.body
+
+    const existingQuote = await Quote.findById(quoteId).populate({
+      path: 'comments',
+      populate: {
+        path: 'user',
+        select: 'name _id image',
+      },
+    })
+
+    if (!existingQuote) {
+      return res.status(404).json({ message: 'Quote not found' })
+    }
+
+    const existingUser = await User.findById(userId)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    await Quote.findByIdAndUpdate(quoteId, {
+      $push: {
+        comments: {
+          user: new mongoose.Types.ObjectId(userId),
+          commentText,
+        },
+      },
+    })
+
+    return res.status(201).json(existingQuote)
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }
