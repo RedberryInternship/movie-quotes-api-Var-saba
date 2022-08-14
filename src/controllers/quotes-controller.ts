@@ -7,7 +7,7 @@ import fs from 'fs'
 
 export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
   try {
-    const { movieId, quoteEn, quoteGe, user } = req.body
+    const { movie, quoteEn, quoteGe, user } = req.body
 
     if (!req.file) {
       return res.status(422).json({ message: 'Upload quote image' })
@@ -31,21 +31,23 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
       return res.status(409).json({ message: 'Quote is already added' })
     }
 
-    const currentMovie = await Movie.findById(movieId).select('-_id')
+    const currentMovie = await Movie.findById(movie).select('-_id')
 
     if (currentMovie) {
       const newQuote = await Quote.create({
         quoteEn,
         quoteGe,
-        movieId,
+        movie,
         user,
       })
 
       newQuote.image = imagePathDb
 
-      await newQuote.save()
+      await (
+        await (await newQuote.save()).populate('user', 'name image')
+      ).populate('movie', 'movieNameEn movieNameGe')
 
-      await Movie.findByIdAndUpdate(movieId, {
+      await Movie.findByIdAndUpdate(movie, {
         $push: {
           quotes: {
             _id: new mongoose.Types.ObjectId(newQuote._id),
@@ -102,7 +104,7 @@ export const changeQuote = async (
   try {
     const { id, quoteEn, quoteGe } = req.body
 
-    const existingQuote = await Quote.findById(id).select('-movieId')
+    const existingQuote = await Quote.findById(id).select('-movie')
 
     if (!existingQuote) {
       return res.status(404).json({ message: 'Quote not found' })

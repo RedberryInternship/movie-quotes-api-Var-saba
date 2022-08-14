@@ -2,10 +2,10 @@ import { languageValidation } from 'utils'
 import { check } from 'express-validator'
 
 const quoteSchema = [
-  check('movieId')
+  check('movie')
     .trim()
     .isLength({ min: 24, max: 24 })
-    .withMessage('movieId should include 24 characters'),
+    .withMessage('movie id should include 24 characters'),
 
   check('user')
     .trim()

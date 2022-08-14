@@ -5,10 +5,7 @@ const { Schema } = mongoose
 
 const quoteSchema = new Schema<QuoteModel>(
   {
-    movieId: {
-      type: String,
-      required: true,
-    },
+    movie: { type: Schema.Types.ObjectId, ref: 'movie', required: true },
 
     quoteEn: {
       type: String,
