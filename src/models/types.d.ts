@@ -24,9 +24,8 @@ export type QuoteModel = {
   comments: { user: object; commentText: string }[]
   quoteEn: string
   quoteGe: string
-  movie: string
-  likes: number
+  likes: object[]
+  movie: object
   image: string
-  user: object
   user: object
 }

@@ -19,11 +19,7 @@ const quoteSchema = new Schema<QuoteModel>(
 
     user: { type: Schema.Types.ObjectId, ref: 'user', required: true },
 
-    likes: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    likes: [{ type: Schema.Types.ObjectId, ref: 'user', required: true }],
 
     comments: [
       {
