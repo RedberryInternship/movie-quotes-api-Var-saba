@@ -171,10 +171,19 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
   try {
     const { id } = req.query
 
-    const existingMovie = await Movie.findById(id).select('quotes').populate({
-      path: 'quotes',
-      select: '-movie -user',
-    })
+    const existingMovie = await Movie.findById(id)
+      .select('quotes')
+      .populate({
+        path: 'quotes',
+        select: '-movie -user',
+        populate: {
+          path: 'comments',
+          populate: {
+            path: 'user',
+            select: '_id name image',
+          },
+        },
+      })
 
     if (!existingMovie) {
       return res.status(404).json({ message: 'Movie and quotes not found' })
