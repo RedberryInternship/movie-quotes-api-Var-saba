@@ -31,3 +31,5 @@ export type QueryId = {
     id: string
   }
 }
+
+export type Id = { id: string }

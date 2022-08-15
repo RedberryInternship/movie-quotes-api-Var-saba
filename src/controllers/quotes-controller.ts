@@ -166,3 +166,24 @@ export const commentOnQuote = async (
     return res.status(500).json({ message: error.message })
   }
 }
+
+export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
+  try {
+    const { id } = req.query
+
+    const existingMovie = await Movie.findById(id).select('quotes').populate({
+      path: 'quotes',
+      select: '-movie -user',
+    })
+
+    if (!existingMovie) {
+      return res.status(404).json({ message: 'Movie and quotes not found' })
+    }
+
+    const quotesList = existingMovie
+
+    return res.status(200).json(quotesList.quotes)
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}

@@ -1,7 +1,13 @@
-import { addQuote, deleteQuote, changeQuote, commentOnQuote } from 'controllers'
 import { validateRequestSchema } from 'middlewares'
 import { uploadQuoteImage } from 'utils'
 import express from 'express'
+import {
+  getCertainMovieQuotes,
+  commentOnQuote,
+  deleteQuote,
+  changeQuote,
+  addQuote,
+} from 'controllers'
 import {
   changeQuoteSchema,
   newCommentSchema,
@@ -12,6 +18,8 @@ import {
 const router = express.Router()
 
 router.delete('/delete-quote', idSchema, validateRequestSchema, deleteQuote)
+
+router.get('/movie-quotes', getCertainMovieQuotes)
 
 router.put(
   '/change-quote',
