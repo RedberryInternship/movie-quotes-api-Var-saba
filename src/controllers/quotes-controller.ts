@@ -189,7 +189,7 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
 
     const quotesList = existingMovie
 
-    return res.status(200).json(quotesList.quotes)
+    return res.status(200).json(quotesList.quotes.reverse())
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

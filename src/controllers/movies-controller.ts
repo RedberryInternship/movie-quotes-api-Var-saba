@@ -88,12 +88,14 @@ export const getAllMovies = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
-    const movies = await Movie.find({
-      userId: new mongoose.Types.ObjectId(userId),
-    }).populate({
-      path: 'quotes',
-      select: '-movieId',
-    })
+    const movies = (
+      await Movie.find({
+        userId: new mongoose.Types.ObjectId(userId),
+      }).populate({
+        path: 'quotes',
+        select: '-movieId',
+      })
+    ).reverse()
 
     return res.status(200).json(movies)
   } catch (error: any) {
