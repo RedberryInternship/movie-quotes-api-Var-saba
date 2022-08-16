@@ -89,9 +89,7 @@ export const deleteQuote = async (req: QueryId, res: Response) => {
 
     await Quote.deleteOne(id)
 
-    return res.status(200).json({
-      message: 'quote deleted successfully',
-    })
+    return res.status(200).json({ deletedQuoteId: req.query.id })
   } catch (error: any) {
     return res.status(422).json({ message: 'Enter valid id' })
   }
