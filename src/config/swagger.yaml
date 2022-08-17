@@ -812,3 +812,308 @@ paths:
                   message: Movie not found
         '422':
           description: Unprocessed Entity
+
+  # Quotes
+  /movie-quotes:
+    get:
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Get quote list of certain movie
+      responses:
+        '200':
+          description: Quote list fetched successfully
+        '404':
+          description: Movie and quotes not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Movie and quotes not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal server error
+
+  /add-quote:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Add new quote
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                movie:
+                  type: string
+                  example: 62fb430e66f91160114e57cd
+                quoteEn:
+                  type: string
+                  example: quote in English
+                quoteGe:
+                  type: string
+                  example: quote in Georgian
+                user:
+                  type: string
+                  example: 62e934bdfc8d986260667984
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Quote added successfully
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: Quote is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Quote is already added
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal server error
+
+  /add-comment:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Comment on quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentText:
+                  type: string
+                quoteId:
+                  type: string
+                userId:
+                  type: number
+            example:
+              commentText: comment text
+              quoteId: 62f129f76039ca61e0b44654
+              userId: '62f129f76039ca61e0b44654'
+      responses:
+        '201':
+          description: Comment added successfully
+        '401':
+          description: User or quote not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /change-quote:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Change quote details
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 62fb8014c91b7eb0dd6d7ced
+                quoteEn:
+                  type: string
+                  example: quote in English
+                quoteGe:
+                  type: string
+                  example: ციტატა ქართულად
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Quote details changed successfully
+        '404':
+          description: Quote not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Quote not found
+        '409':
+          description: Quote is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: This quote is already added
+        '422':
+          description: Unprocessed Entity
+
+  /like-quote:
+    put:
+      parameters:
+        - in: query
+          name: quoteId
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Like quote
+      responses:
+        '200':
+          description: Quote liked successfully
+        '404':
+          description: User or quote not found
+        '409':
+          description: User already liked quote
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User already liked this quote
+        '422':
+          description: Provided user or quote id is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Enter valid id
+
+  /dislike-quote:
+    put:
+      parameters:
+        - in: query
+          name: quoteId
+          schema:
+            type: string
+        - in: query
+          name: userId
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Dislike quote
+      responses:
+        '200':
+          description: Quote disliked successfully
+        '404':
+          description: User or quote not found
+        '409':
+          description: User have not liked quote yet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User have not liked this quote yet
+        '422':
+          description: Provided user or quote id is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Enter valid id
+
+  /delete-quote:
+    delete:
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Delete quote
+      responses:
+        '200':
+          description: Quote deleted successfully
+        '404':
+          description: Quote not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Quote not found
+        '422':
+          description: Provided id is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Enter valid id
