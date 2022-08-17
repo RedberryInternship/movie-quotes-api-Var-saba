@@ -4,6 +4,7 @@ import express from 'express'
 import {
   getCertainMovieQuotes,
   commentOnQuote,
+  dislikeQuote,
   deleteQuote,
   changeQuote,
   likeQuote,
@@ -23,6 +24,8 @@ router.delete('/delete-quote', idSchema, validateRequestSchema, deleteQuote)
 router.get('/movie-quotes', getCertainMovieQuotes)
 
 router.put('/like-quote', likeQuote)
+
+router.put('/dislike-quote', dislikeQuote)
 
 router.put(
   '/change-quote',

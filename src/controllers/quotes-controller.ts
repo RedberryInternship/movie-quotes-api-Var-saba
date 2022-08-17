@@ -230,3 +230,39 @@ export const likeQuote = async (req: LikeQueryReq, res: Response) => {
     return res.status(422).json({ message: 'Enter valid id' })
   }
 }
+
+export const dislikeQuote = async (req: LikeQueryReq, res: Response) => {
+  try {
+    const { quoteId, userId } = req.query
+
+    const id = { _id: new mongoose.Types.ObjectId(quoteId) }
+
+    const quote = await Quote.findOne(id)
+
+    const existingUser = await User.findById(userId)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (!quote) {
+      return res.status(404).json({ message: 'Quote not found' })
+    }
+
+    if (!quote.likes.includes(new mongoose.Types.ObjectId(userId))) {
+      return res
+        .status(409)
+        .json({ message: 'User have not liked this quote yet' })
+    }
+
+    await quote.update({
+      $pull: {
+        likes: new mongoose.Types.ObjectId(userId),
+      },
+    })
+
+    return res.status(200).json({ userDislike: userId })
+  } catch (error: any) {
+    return res.status(422).json({ message: 'Enter valid id' })
+  }
+}
