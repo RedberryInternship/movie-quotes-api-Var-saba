@@ -60,3 +60,10 @@ export type CommentReq = {
   quoteId: string
   userId: string
 }
+
+export type LikeQueryReq = {
+  query: {
+    quoteId: string
+    userId: string
+  }
+}

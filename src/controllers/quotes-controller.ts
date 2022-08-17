@@ -1,6 +1,6 @@
+import { ChangeQuoteReq, CommentReq, LikeQueryReq } from './types.d'
 import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
-import { ChangeQuoteReq, CommentReq } from './types.d'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
@@ -192,5 +192,41 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
     return res.status(200).json(quotesList.quotes.reverse())
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
+  }
+}
+
+export const likeQuote = async (req: LikeQueryReq, res: Response) => {
+  try {
+    const { quoteId, userId } = req.query
+
+    const id = { _id: new mongoose.Types.ObjectId(quoteId) }
+
+    const quote = await Quote.findOne(id)
+
+    const existingUser = await User.findById(userId)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (!quote) {
+      return res.status(404).json({ message: 'Quote not found' })
+    }
+
+    if (quote.likes.includes(new mongoose.Types.ObjectId(userId))) {
+      return res.status(409).json({ message: 'User already liked this quote' })
+    }
+
+    await quote.update({
+      $push: {
+        likes: {
+          _id: new mongoose.Types.ObjectId(userId),
+        },
+      },
+    })
+
+    return res.status(200).json({ newLike: userId })
+  } catch (error: any) {
+    return res.status(422).json({ message: 'Enter valid id' })
   }
 }

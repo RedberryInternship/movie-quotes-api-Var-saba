@@ -6,6 +6,7 @@ import {
   commentOnQuote,
   deleteQuote,
   changeQuote,
+  likeQuote,
   addQuote,
 } from 'controllers'
 import {
@@ -20,6 +21,8 @@ const router = express.Router()
 router.delete('/delete-quote', idSchema, validateRequestSchema, deleteQuote)
 
 router.get('/movie-quotes', getCertainMovieQuotes)
+
+router.put('/like-quote', likeQuote)
 
 router.put(
   '/change-quote',
