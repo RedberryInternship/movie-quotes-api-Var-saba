@@ -134,11 +134,11 @@ export const changeMovie = async (
     const {
       movieDescriptionEn,
       movieDescriptionGe,
+      movieGenres,
       movieNameEn,
       movieNameGe,
       directorEn,
       directorGe,
-      movieGenres,
       budget,
       id,
     } = req.body
