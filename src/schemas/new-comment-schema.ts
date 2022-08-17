@@ -13,6 +13,7 @@ const newCommentSchema = [
 
   check('commentText')
     .exists()
+    .trim()
     .notEmpty()
     .withMessage('Comment text is required'),
 ]

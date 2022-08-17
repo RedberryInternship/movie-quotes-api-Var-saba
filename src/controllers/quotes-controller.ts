@@ -125,46 +125,6 @@ export const changeQuote = async (
   }
 }
 
-export const commentOnQuote = async (
-  req: RequestBody<CommentReq>,
-  res: Response
-) => {
-  try {
-    const { commentText, quoteId, userId } = req.body
-
-    const existingQuote = await Quote.findById(quoteId).populate({
-      path: 'comments',
-      populate: {
-        path: 'user',
-        select: 'name _id image',
-      },
-    })
-
-    if (!existingQuote) {
-      return res.status(404).json({ message: 'Quote not found' })
-    }
-
-    const existingUser = await User.findById(userId)
-
-    if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    await Quote.findByIdAndUpdate(quoteId, {
-      $push: {
-        comments: {
-          user: new mongoose.Types.ObjectId(userId),
-          commentText,
-        },
-      },
-    })
-
-    return res.status(201).json(existingQuote)
-  } catch (error: any) {
-    return res.status(500).json({ message: error.message })
-  }
-}
-
 export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
   try {
     const { id } = req.query
@@ -228,6 +188,48 @@ export const likeQuote = async (req: LikeQueryReq, res: Response) => {
     return res.status(200).json({ newLike: userId })
   } catch (error: any) {
     return res.status(422).json({ message: 'Enter valid id' })
+  }
+}
+
+export const commentOnQuote = async (
+  req: RequestBody<CommentReq>,
+  res: Response
+) => {
+  try {
+    const { commentText, quoteId, userId } = req.body
+
+    const existingQuote = await Quote.findById(quoteId)
+
+    if (!existingQuote) {
+      return res.status(404).json({ message: 'Quote not found' })
+    }
+
+    const existingUser = await User.findById(userId)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    await existingQuote.update({
+      $push: {
+        comments: {
+          user: new mongoose.Types.ObjectId(userId),
+          commentText,
+        },
+      },
+    })
+
+    const currentComments = await Quote.findById(quoteId).populate({
+      path: 'comments',
+      populate: {
+        path: 'user',
+        select: 'name _id image',
+      },
+    })
+
+    return res.status(201).json(currentComments?.comments.at(-1))
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }
 

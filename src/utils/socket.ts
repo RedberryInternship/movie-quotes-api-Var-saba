@@ -8,6 +8,7 @@ const EVENTS = {
       DELETE_MOVIE_QUOTE: 'DELETE_MOVIE_QUOTE',
       DISLIKE_QUOTE: 'DISLIKE_QUOTE',
       UPDATE_MOVIE: 'UPDATE_MOVIE',
+      ADD_COMMENT: 'ADD_COMMENT',
       LIKE_QUOTE: 'LIKE_QUOTE',
       EDIT_QUOTE: 'EDIT_QUOTE',
       ADD_QUOTE: 'ADD_QUOTE',
@@ -19,6 +20,7 @@ const EVENTS = {
       SEND_UPDATED_MOVIE: 'SEND_UPDATED_MOVIE',
       SEND_DISLIKE_QUOTE: 'SEND_DISLIKE_QUOTE',
       SEND_EDITED_QUOTE: 'SEND_EDITED_QUOTE',
+      SEND_NEW_COMMENT: 'SEND_NEW_COMMENT',
       SEND_NEW_QUOTE: 'SEND_NEW_QUOTE',
       SEND_NEW_MOVIE: 'SEND_NEW_MOVIE',
       SEND_NEW_LIKE: 'SEND_NEW_LIKE',
@@ -58,6 +60,10 @@ const socket = ({ io }: { io: Server }) => {
         data.userDislike,
         quoteId
       )
+    })
+
+    socket.on(EVENTS.movies.on.ADD_COMMENT, (newComment, quoteId) => {
+      io.sockets.emit(EVENTS.movies.emit.SEND_NEW_COMMENT, newComment, quoteId)
     })
   })
 }
