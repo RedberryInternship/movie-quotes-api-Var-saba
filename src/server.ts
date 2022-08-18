@@ -1,5 +1,5 @@
+import { userRouter, authRouter, moviesRouter, quoteRouter } from 'routes'
 import { swaggerMiddleware, authMiddleware } from 'middlewares'
-import { userRouter, authRouter, moviesRouter } from 'routes'
 import express, { RequestHandler } from 'express'
 import SwaggerUI from 'swagger-ui-express'
 import cookieParser from 'cookie-parser'
@@ -35,8 +35,8 @@ server.use(express.static('public'))
 
 server.use(authRouter)
 server.use(userRouter)
-
 server.use(moviesRouter)
+server.use(quoteRouter)
 
 httpServer.listen(process.env.SERVER_PORT, () => {
   console.log(

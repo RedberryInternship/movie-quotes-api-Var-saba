@@ -14,7 +14,18 @@ export type MovieModel = {
   movieGenres: string[]
   directorEn: string
   directorGe: string
+  quotes: object[]
   image?: string
   budget: number
   userId: string
+}
+
+export type QuoteModel = {
+  comments: { user: object; commentText: string }[]
+  quoteEn: string
+  quoteGe: string
+  likes: object[]
+  movie: object
+  image: string
+  user: object
 }

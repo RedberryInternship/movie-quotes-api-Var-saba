@@ -1,5 +1,6 @@
 /public/images/movies*
 /public/images/users*
+/public/images/quotes*
 /node_modules
 .vscode
 /build

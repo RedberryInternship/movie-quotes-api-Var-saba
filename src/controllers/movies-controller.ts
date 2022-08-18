@@ -88,9 +88,14 @@ export const getAllMovies = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
-    const movies = await Movie.find({
-      userId: new mongoose.Types.ObjectId(userId),
-    })
+    const movies = (
+      await Movie.find({
+        userId: new mongoose.Types.ObjectId(userId),
+      }).populate({
+        path: 'quotes',
+        select: '-movieId',
+      })
+    ).reverse()
 
     return res.status(200).json(movies)
   } catch (error: any) {
@@ -129,11 +134,11 @@ export const changeMovie = async (
     const {
       movieDescriptionEn,
       movieDescriptionGe,
+      movieGenres,
       movieNameEn,
       movieNameGe,
       directorEn,
       directorGe,
-      movieGenres,
       budget,
       id,
     } = req.body
@@ -152,11 +157,11 @@ export const changeMovie = async (
     }
     existingMovie.movieDescriptionEn = movieDescriptionEn
     existingMovie.movieDescriptionGe = movieDescriptionGe
+    existingMovie.movieGenres = movieGenres
     existingMovie.movieNameEn = movieNameEn
     existingMovie.movieNameGe = movieNameGe
     existingMovie.directorEn = directorEn
     existingMovie.directorGe = directorGe
-    existingMovie.movieGenres = movieGenres
     existingMovie.budget = budget
     await existingMovie.save()
 

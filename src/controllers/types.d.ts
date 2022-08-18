@@ -33,7 +33,7 @@ export type ChangeMemberReq = {
 }
 
 export type NewEmailReq = {
-  userId: string
+  user: string
   token: string
 }
 
@@ -47,4 +47,23 @@ export type ChangeMovieReq = {
   directorGe: string
   budget: number
   id: string
+}
+
+export type ChangeQuoteReq = {
+  quoteEn: string
+  quoteGe: string
+  id: string
+}
+
+export type CommentReq = {
+  commentText: string
+  quoteId: string
+  userId: string
+}
+
+export type LikeQueryReq = {
+  query: {
+    quoteId: string
+    userId: string
+  }
 }
