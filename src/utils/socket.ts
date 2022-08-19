@@ -8,21 +8,30 @@ const EVENTS = {
       DELETE_MOVIE_QUOTE: 'DELETE_MOVIE_QUOTE',
       DISLIKE_QUOTE: 'DISLIKE_QUOTE',
       UPDATE_MOVIE: 'UPDATE_MOVIE',
+    },
+
+    emit: {
+      SEND_NEW_MOVIE_QUOTES: 'SEND_NEW_MOVIE_QUOTES',
+      SEND_UPDATED_MOVIE: 'SEND_UPDATED_MOVIE',
+      SEND_NEW_MOVIE: 'SEND_NEW_MOVIE',
+    },
+  },
+
+  quotes: {
+    on: {
+      ADD_QUOTE_NEWS_FEED: 'ADD_QUOTE_NEWS_FEED',
       ADD_COMMENT: 'ADD_COMMENT',
       LIKE_QUOTE: 'LIKE_QUOTE',
       EDIT_QUOTE: 'EDIT_QUOTE',
       ADD_QUOTE: 'ADD_QUOTE',
       ADD_MOVIE: 'ADD_MOVIE',
     },
-
     emit: {
-      SEND_NEW_MOVIE_QUOTES: 'SEND_NEW_MOVIE_QUOTES',
-      SEND_UPDATED_MOVIE: 'SEND_UPDATED_MOVIE',
+      SEND_NEW_QUOTE_NEWS_FEED: 'SEND_NEW_QUOTE_NEWS_FEED',
       SEND_DISLIKE_QUOTE: 'SEND_DISLIKE_QUOTE',
       SEND_EDITED_QUOTE: 'SEND_EDITED_QUOTE',
       SEND_NEW_COMMENT: 'SEND_NEW_COMMENT',
       SEND_NEW_QUOTE: 'SEND_NEW_QUOTE',
-      SEND_NEW_MOVIE: 'SEND_NEW_MOVIE',
       SEND_NEW_LIKE: 'SEND_NEW_LIKE',
     },
   },
@@ -30,7 +39,7 @@ const EVENTS = {
 
 const socket = ({ io }: { io: Server }) => {
   io.on(EVENTS.connection, (socket: Socket) => {
-    socket.on(EVENTS.movies.on.ADD_MOVIE, (newMovie) => {
+    socket.on(EVENTS.quotes.on.ADD_MOVIE, (newMovie) => {
       socket.emit(EVENTS.movies.emit.SEND_NEW_MOVIE, newMovie)
     })
 
@@ -39,31 +48,35 @@ const socket = ({ io }: { io: Server }) => {
     })
 
     socket.on(EVENTS.movies.on.DELETE_MOVIE_QUOTE, (deletedQuoteId) => {
-      socket.emit(EVENTS.movies.emit.SEND_NEW_MOVIE_QUOTES, deletedQuoteId)
+      io.sockets.emit(EVENTS.movies.emit.SEND_NEW_MOVIE_QUOTES, deletedQuoteId)
     })
 
-    socket.on(EVENTS.movies.on.ADD_QUOTE, (quote) => {
-      socket.emit(EVENTS.movies.emit.SEND_NEW_QUOTE, quote)
+    socket.on(EVENTS.quotes.on.ADD_QUOTE, (quote) => {
+      socket.emit(EVENTS.quotes.emit.SEND_NEW_QUOTE, quote)
     })
 
-    socket.on(EVENTS.movies.on.EDIT_QUOTE, (editedQuote) => {
-      socket.emit(EVENTS.movies.emit.SEND_EDITED_QUOTE, editedQuote)
+    socket.on(EVENTS.quotes.on.ADD_QUOTE_NEWS_FEED, (quote) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_QUOTE_NEWS_FEED, quote)
     })
 
-    socket.on(EVENTS.movies.on.LIKE_QUOTE, (data, quoteId) => {
-      io.sockets.emit(EVENTS.movies.emit.SEND_NEW_LIKE, data.newLike, quoteId)
+    socket.on(EVENTS.quotes.on.EDIT_QUOTE, (editedQuote) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_EDITED_QUOTE, editedQuote)
+    })
+
+    socket.on(EVENTS.quotes.on.LIKE_QUOTE, (data, quoteId) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_LIKE, data.newLike, quoteId)
     })
 
     socket.on(EVENTS.movies.on.DISLIKE_QUOTE, (data, quoteId) => {
       io.sockets.emit(
-        EVENTS.movies.emit.SEND_DISLIKE_QUOTE,
+        EVENTS.quotes.emit.SEND_DISLIKE_QUOTE,
         data.userDislike,
         quoteId
       )
     })
 
-    socket.on(EVENTS.movies.on.ADD_COMMENT, (newComment, quoteId) => {
-      io.sockets.emit(EVENTS.movies.emit.SEND_NEW_COMMENT, newComment, quoteId)
+    socket.on(EVENTS.quotes.on.ADD_COMMENT, (newComment, quoteId) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_COMMENT, newComment, quoteId)
     })
   })
 }

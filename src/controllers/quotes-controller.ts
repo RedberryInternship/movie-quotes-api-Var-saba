@@ -1,9 +1,14 @@
-import { ChangeQuoteReq, CommentReq, LikeQueryReq } from './types.d'
 import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
+import {
+  QuoteRequestQuery,
+  ChangeQuoteReq,
+  LikeQueryReq,
+  CommentReq,
+} from './types.d'
 
 export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
   try {
@@ -266,5 +271,50 @@ export const dislikeQuote = async (req: LikeQueryReq, res: Response) => {
     return res.status(200).json({ userDislike: userId })
   } catch (error: any) {
     return res.status(422).json({ message: 'Enter valid id' })
+  }
+}
+
+export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
+  try {
+    const allQuotes = (await Quote.find()).reverse()
+
+    if (!req.query.page) {
+      return res.status(200).json({ quotes: allQuotes })
+    }
+
+    const quotesPerPage = 4
+
+    const totalQuotes = await Quote.find().countDocuments()
+
+    const quotes = await Quote.find()
+      .sort({ _id: -1 })
+      .skip((+req.query.page - 1) * quotesPerPage)
+      .limit(quotesPerPage)
+      .populate({
+        path: 'user',
+        select: 'name image _id',
+      })
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: '_id name image',
+        },
+      })
+
+    if (quotes.length === 0) {
+      return res.status(200).json({
+        quotes: [],
+      })
+    }
+
+    return res.status(200).json({
+      quotes,
+      paginationInfo: {
+        hasMoreQuotes: +req.query.page * 4 < totalQuotes,
+      },
+    })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }
