@@ -1,9 +1,10 @@
+import { deleteFile, populateQuote, includeChecker } from 'utils'
 import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
-import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
 import {
+  NewsFeedRequestQuery,
   QuoteRequestQuery,
   ChangeQuoteReq,
   LikeQueryReq,
@@ -288,35 +289,9 @@ export const dislikeQuote = async (req: LikeQueryReq, res: Response) => {
 
 export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
   try {
-    const allQuotes = (await Quote.find()).reverse()
-
-    if (!req.query.page) {
-      return res.status(200).json({ quotes: allQuotes })
-    }
-
-    const quotesPerPage = 3
-
     const totalQuotes = await Quote.find().countDocuments()
 
-    const quotes = await Quote.find()
-      .sort({ _id: -1 })
-      .skip((+req.query.page - 1) * quotesPerPage)
-      .limit(quotesPerPage)
-      .populate({
-        path: 'user',
-        select: 'name image _id',
-      })
-      .populate({
-        path: 'comments',
-        populate: {
-          path: 'user',
-          select: '_id name image',
-        },
-      })
-      .populate({
-        path: 'movie',
-        select: 'movieNameEn movieNameGe _id image',
-      })
+    const quotes = await populateQuote(+req.query.page || 1, 3)
 
     if (quotes.length === 0) {
       return res.status(200).json({
@@ -330,6 +305,44 @@ export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
         hasMoreQuotes: +req.query.page * 3 < totalQuotes,
       },
     })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+export const getNewsFeedPost = async (
+  req: NewsFeedRequestQuery,
+  res: Response
+) => {
+  try {
+    const { searchValue } = req.query
+
+    if (searchValue) {
+      const searchKeyWord = searchValue.slice(1).toLowerCase()
+      const newsFeedPosts = await populateQuote()
+
+      if (searchValue.trim()[0] === '@') {
+        const matchedMovies = newsFeedPosts.filter((post) =>
+          includeChecker(
+            post.movie.movieNameEn,
+            post.movie.movieNameGe,
+            searchKeyWord
+          )
+        )
+        return res.status(200).json(matchedMovies)
+      }
+
+      if (searchValue.trim()[0] === '#') {
+        const matchedQuotes = newsFeedPosts.filter((post) =>
+          includeChecker(post.quoteEn, post.quoteGe, searchKeyWord)
+        )
+        return res.status(200).json(matchedQuotes)
+      }
+    }
+
+    return res
+      .status(422)
+      .json({ message: "Search value should starts with '@' or '#'" })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

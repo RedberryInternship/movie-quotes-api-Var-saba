@@ -73,3 +73,9 @@ export type QuoteRequestQuery = {
     page: string
   }
 }
+
+export type NewsFeedRequestQuery = {
+  query: {
+    searchValue: string
+  }
+}
