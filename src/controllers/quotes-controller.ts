@@ -107,7 +107,19 @@ export const changeQuote = async (
   try {
     const { id, quoteEn, quoteGe } = req.body
 
-    const existingQuote = await Quote.findById(id).select('-movie')
+    const existingQuote = await Quote.findById(id)
+      .select('-movie')
+      .populate({
+        path: 'user',
+        select: '_id name image',
+      })
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: '_id name image',
+        },
+      })
 
     if (!existingQuote) {
       return res.status(404).json({ message: 'Quote not found' })
@@ -282,7 +294,7 @@ export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
       return res.status(200).json({ quotes: allQuotes })
     }
 
-    const quotesPerPage = 4
+    const quotesPerPage = 3
 
     const totalQuotes = await Quote.find().countDocuments()
 
@@ -301,6 +313,10 @@ export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
           select: '_id name image',
         },
       })
+      .populate({
+        path: 'movie',
+        select: 'movieNameEn movieNameGe _id image',
+      })
 
     if (quotes.length === 0) {
       return res.status(200).json({
@@ -311,7 +327,7 @@ export const getAllQuote = async (req: QuoteRequestQuery, res: Response) => {
     return res.status(200).json({
       quotes,
       paginationInfo: {
-        hasMoreQuotes: +req.query.page * 4 < totalQuotes,
+        hasMoreQuotes: +req.query.page * 3 < totalQuotes,
       },
     })
   } catch (error: any) {
