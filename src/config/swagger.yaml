@@ -815,6 +815,25 @@ paths:
           description: Unprocessed Entity
 
   # Quotes
+  /all-quotes:
+    get:
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      tags:
+        - Quote
+      description: Get news feed posts (3 on for each request) added by users.
+      responses:
+        '200':
+          description: Posts fetched successfully
+        '500':
+          description: Internal server error
+
   /movie-quotes:
     get:
       parameters:
