@@ -16,25 +16,18 @@ const authMiddleware = (req: AuthBody, res: Response, next: Next) => {
     ) {
       return next()
     } else {
-      const secretText = process.env.JWT_SECRET
-      let token = 'JWT token'
+      const { authorization } = req.headers
 
-      if (url.includes('/images')) {
-        token = req.cookies.token
-      } else {
-        const { authorization } = req.headers
-
-        if (!authorization) {
-          return res.status(401).json({
-            message: 'Missing authorization headers',
-          })
-        }
-
-        token = authorization.trim().split(' ')[1]
+      if (!authorization) {
+        return res.status(401).json({
+          message: 'Missing authorization headers',
+        })
       }
 
+      const token = authorization.trim().split(' ')[1]
+
       let verified: string | JwtPayload
-      verified = jwt.verify(token, secretText!)
+      verified = jwt.verify(token, process.env.JWT_SECRET!)
 
       if (verified) {
         return next()
