@@ -1,5 +1,5 @@
 import { Response, RequestBody, RequestQuery, QueryId } from 'types.d'
-import { MovieModel, Movie, User } from 'models'
+import { MovieModel, Movie, User, Quote } from 'models'
 import { ChangeMovieReq } from './types.d'
 import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
@@ -120,7 +120,9 @@ export const deleteMovie = async (req: QueryId, res: Response) => {
     }
 
     await Movie.deleteOne(id)
-    return res.status(200).json({ message: 'Movie deleted successfully' })
+    await Quote.deleteMany({ movie: id })
+
+    return res.status(200).json({ deletedMovieId: id })
   } catch (error: any) {
     return res.status(422).json({ message: 'Enter valid id' })
   }

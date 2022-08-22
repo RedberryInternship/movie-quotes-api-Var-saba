@@ -13,7 +13,8 @@ const languageValidation = (value: string, language: 'en' | 'ge') => {
     if (
       !isValidLanguage &&
       !/[-!$%^&*()_+|~=`{}[\]:";'<>?,./]/.test(char) &&
-      !+char
+      !+char &&
+      char !== '0'
     ) {
       return false
     }

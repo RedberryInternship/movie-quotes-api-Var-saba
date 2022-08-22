@@ -1,5 +1,7 @@
 export { default as languageValidation } from './languageValidation'
+export { default as includeChecker } from './includeChecker'
 export { default as generateEmail } from './generateEmail'
+export { default as populateQuote } from './populateQuote'
 export { default as isLowercase } from './isLowercase'
 export { default as deleteFile } from './deleteFile'
 export { default as emailData } from './emailData'

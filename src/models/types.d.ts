@@ -22,10 +22,10 @@ export type MovieModel = {
 
 export type QuoteModel = {
   comments: { user: object; commentText: string }[]
+  movie: { movieNameEn: string; movieNameGe: string }
   quoteEn: string
   quoteGe: string
   likes: object[]
-  movie: object
   image: string
   user: object
 }

@@ -67,3 +67,15 @@ export type LikeQueryReq = {
     userId: string
   }
 }
+
+export type QuoteRequestQuery = {
+  query: {
+    page: string
+  }
+}
+
+export type NewsFeedRequestQuery = {
+  query: {
+    searchValue: string
+  }
+}
