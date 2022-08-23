@@ -53,7 +53,7 @@ const socket = ({ io }: { io: Server }) => {
       io.sockets.emit(EVENTS.movies.emit.SEND_DELETED_MOVIE_ID, deletedMovieId)
     })
 
-    socket.on(EVENTS.movies.on.DELETE_MOVIE, (deletedQuoteId) => {
+    socket.on(EVENTS.movies.on.DELETE_MOVIE_QUOTE, (deletedQuoteId) => {
       io.sockets.emit(EVENTS.movies.emit.SEND_NEW_MOVIE_QUOTES, deletedQuoteId)
     })
 
@@ -67,10 +67,6 @@ const socket = ({ io }: { io: Server }) => {
 
     socket.on(EVENTS.quotes.on.EDIT_QUOTE, (editedQuote) => {
       io.sockets.emit(EVENTS.quotes.emit.SEND_EDITED_QUOTE, editedQuote)
-    })
-
-    socket.on(EVENTS.quotes.on.LIKE_QUOTE, (data, quoteId) => {
-      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_LIKE, data.newLike, quoteId)
     })
 
     socket.on(EVENTS.movies.on.DISLIKE_QUOTE, (data, quoteId) => {

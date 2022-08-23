@@ -151,13 +151,20 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
       .select('quotes')
       .populate({
         path: 'quotes',
-        select: '-movie -user',
+        select: '-movie',
         populate: {
           path: 'comments',
           populate: {
             path: 'user',
             select: '_id name image',
           },
+        },
+      })
+      .populate({
+        path: 'quotes',
+        populate: {
+          path: 'user',
+          select: '_id name image',
         },
       })
 

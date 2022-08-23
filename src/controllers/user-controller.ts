@@ -1,4 +1,3 @@
-import { ChangePasswordReq, ChangeMemberReq, Email } from './types.d'
 import { generateEmail, emailData } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
@@ -6,12 +5,19 @@ import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
+  ChangePasswordReq,
+  ChangeMemberReq,
+  NotificationReq,
+  Email,
+} from './types.d'
+import {
   RequestQuery,
   ImageReqBody,
   RequestBody,
   AccessToken,
   Response,
 } from 'types.d'
+import mongoose from 'mongoose'
 
 export const changePassword = async (req: ChangePasswordReq, res: Response) => {
   try {
@@ -148,15 +154,66 @@ export const getUserDetails = async (
       return res.status(401).json({ message: 'Enter valid JWT token' })
     }
 
-    const existingUser = await User.findOne({ email }).select(
-      '-__v -password -verified'
-    )
+    const existingUser = await User.findOne({ email })
+      .select('-__v -password -verified')
+      .populate({
+        path: 'notifications',
+        populate: {
+          path: 'user',
+          select: '_id name image',
+        },
+      })
 
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found' })
     }
 
     return res.status(200).json(existingUser)
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const addUserNotification = async (
+  req: RequestBody<NotificationReq>,
+  res: Response
+) => {
+  try {
+    const { receiverId, senderId, notificationType } = req.body
+
+    const senderUser = await User.findById(senderId).select('_id name image')
+    if (!senderUser) {
+      return res.status(404).json({ message: 'Sender user not found' })
+    }
+
+    const receiverUser = await User.findById(receiverId)
+    if (!receiverUser) {
+      return res.status(404).json({ message: 'Receiver user not found' })
+    }
+
+    const currentDate = new Date().toString()
+
+    let newNotification = {
+      date: currentDate,
+      user: new mongoose.Types.ObjectId(senderId),
+      new: true,
+      notificationType,
+    }
+
+    await User.findByIdAndUpdate(receiverId, {
+      $push: {
+        notifications: newNotification,
+      },
+    })
+
+    return res.status(200).json({
+      date: newNotification.date,
+      new: true,
+      notificationType,
+      user: senderUser,
+    })
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,

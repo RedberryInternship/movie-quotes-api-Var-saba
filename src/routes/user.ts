@@ -1,9 +1,15 @@
-import { changeUserSchema, passwordSchema, idSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
+  userNotificationSchema,
+  changeUserSchema,
+  passwordSchema,
+  idSchema,
+} from 'schemas'
+import {
   changeUserCredentials,
+  addUserNotification,
   changePassword,
   getUserDetails,
   uploadUserImg,
@@ -18,6 +24,13 @@ router.post(
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler
+)
+
+router.post(
+  '/add-notification',
+  userNotificationSchema,
+  validateRequestSchema,
+  addUserNotification
 )
 
 router.patch(

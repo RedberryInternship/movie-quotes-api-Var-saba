@@ -79,3 +79,9 @@ export type NewsFeedRequestQuery = {
     searchValue: string
   }
 }
+
+export type NotificationReq = {
+  notificationType: string
+  receiverId: string
+  senderId: string
+}
