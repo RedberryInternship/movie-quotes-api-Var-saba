@@ -1,16 +1,9 @@
+import { changeUserSchema, passwordSchema, idSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
-  userNotificationSchema,
-  changeUserSchema,
-  passwordSchema,
-  idSchema,
-} from 'schemas'
-import {
-  markAsReadNotifications,
   changeUserCredentials,
-  addUserNotification,
   changePassword,
   getUserDetails,
   uploadUserImg,
@@ -20,20 +13,11 @@ const router = express.Router()
 
 router.get('/user-details', getUserDetails)
 
-router.get('/mark-as-read', markAsReadNotifications)
-
 router.post(
   '/change-password',
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler
-)
-
-router.post(
-  '/add-notification',
-  userNotificationSchema,
-  validateRequestSchema,
-  addUserNotification
 )
 
 router.patch(

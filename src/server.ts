@@ -1,4 +1,3 @@
-import { userRouter, authRouter, moviesRouter, quoteRouter } from 'routes'
 import { swaggerMiddleware, authMiddleware } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import SwaggerUI from 'swagger-ui-express'
@@ -9,6 +8,13 @@ import { Server } from 'socket.io'
 import { socket } from 'utils'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import {
+  notificationsRouter,
+  moviesRouter,
+  quoteRouter,
+  userRouter,
+  authRouter,
+} from 'routes'
 
 const server = express()
 server.use(cors())
@@ -31,10 +37,11 @@ server.use(authMiddleware as RequestHandler)
 
 server.use(express.static('public'))
 
-server.use(authRouter)
-server.use(userRouter)
+server.use(notificationsRouter)
 server.use(moviesRouter)
 server.use(quoteRouter)
+server.use(authRouter)
+server.use(userRouter)
 
 httpServer.listen(process.env.SERVER_PORT, () => {
   console.log(
