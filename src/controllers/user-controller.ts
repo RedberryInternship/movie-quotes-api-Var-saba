@@ -148,15 +148,9 @@ export const getUserDetails = async (
       return res.status(401).json({ message: 'Enter valid JWT token' })
     }
 
-    const existingUser = await User.findOne({ email })
-      .select('-__v -password -verified')
-      .populate({
-        path: 'notifications',
-        populate: {
-          path: 'user',
-          select: '_id name image',
-        },
-      })
+    const existingUser = await User.findOne({ email }).select(
+      '-password -verified notifications'
+    )
 
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found' })

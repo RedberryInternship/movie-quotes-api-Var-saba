@@ -85,3 +85,8 @@ export type NotificationReq = {
   receiverId: string
   senderId: string
 }
+
+export type AllNotificationReq = {
+  page: string
+  id: string
+}

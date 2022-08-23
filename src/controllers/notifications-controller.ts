@@ -1,5 +1,6 @@
 import { RequestQuery, RequestBody, Response, Id } from 'types.d'
-import { NotificationReq } from './types.d'
+import { NotificationReq, AllNotificationReq } from './types.d'
+import mongoose from 'mongoose'
 import { User } from 'models'
 
 export const addUserNotification = async (
@@ -34,7 +35,7 @@ export const addUserNotification = async (
       },
     })
 
-    return res.status(200).json({
+    return res.status(201).json({
       ...newNotification,
       user: senderUser,
     })
@@ -52,10 +53,8 @@ export const markAsReadNotifications = async (
   try {
     const { id } = req.query
 
-    if (id.length !== 24) {
-      return res
-        .status(422)
-        .json({ message: 'User id should include 24 characters' })
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
     }
 
     const currentUser = await User.findById(id)
@@ -78,9 +77,59 @@ export const markAsReadNotifications = async (
 
     await currentUser.save()
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: 'Notifications marked as read',
     })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const getUserNotifications = async (
+  req: RequestQuery<AllNotificationReq>,
+  res: Response
+) => {
+  try {
+    const { id, page } = req.query
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
+    if (!page) {
+      return res.status(422).json({ message: 'page query param is required' })
+    }
+
+    const currentUser = await User.findById(id).populate({
+      path: 'notifications',
+      populate: {
+        path: 'user',
+        select: '_id name image',
+      },
+    })
+
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const notificationCount = currentUser.notifications.length
+
+    if (notificationCount === 0) {
+      return res.status(200).json([])
+    }
+
+    const userNotifications = {
+      notifications: currentUser.notifications
+        .slice((+page - 1) * 6, +page * 6)
+        .reverse(),
+      paginationInfo: {
+        hasMoreQuotes: +page * 6 < notificationCount,
+      },
+    }
+
+    return res.status(200).json(userNotifications)
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
