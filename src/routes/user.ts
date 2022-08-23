@@ -8,6 +8,7 @@ import {
   idSchema,
 } from 'schemas'
 import {
+  markAsReadNotifications,
   changeUserCredentials,
   addUserNotification,
   changePassword,
@@ -18,6 +19,8 @@ import {
 const router = express.Router()
 
 router.get('/user-details', getUserDetails)
+
+router.get('/mark-as-read', markAsReadNotifications)
 
 router.post(
   '/change-password',

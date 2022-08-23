@@ -16,6 +16,7 @@ import {
   RequestBody,
   AccessToken,
   Response,
+  Id,
 } from 'types.d'
 import mongoose from 'mongoose'
 
@@ -197,22 +198,65 @@ export const addUserNotification = async (
 
     let newNotification = {
       date: currentDate,
-      user: new mongoose.Types.ObjectId(senderId),
-      new: true,
       notificationType,
+      new: true,
     }
 
     await User.findByIdAndUpdate(receiverId, {
       $push: {
-        notifications: newNotification,
+        notifications: {
+          ...newNotification,
+          user: senderUser._id,
+        },
       },
     })
 
     return res.status(200).json({
-      date: newNotification.date,
-      new: true,
-      notificationType,
+      ...newNotification,
       user: senderUser,
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    })
+  }
+}
+
+export const markAsReadNotifications = async (
+  req: RequestQuery<Id>,
+  res: Response
+) => {
+  try {
+    const { id } = req.query
+
+    if (id.length !== 24) {
+      return res
+        .status(422)
+        .json({ message: 'User id should include 24 characters' })
+    }
+
+    const currentUser = await User.findById(id)
+
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (currentUser.notifications.length === 0) {
+      return res
+        .status(409)
+        .json({ message: 'User notification list is empty' })
+    }
+
+    for (let i = 0; i < currentUser.notifications.length; i++) {
+      if (currentUser.notifications[i].new === true) {
+        currentUser.notifications[i].new = false
+      }
+    }
+
+    await currentUser.save()
+
+    return res.status(201).json({
+      message: 'Notifications marked as read',
     })
   } catch (error: any) {
     return res.status(500).json({
