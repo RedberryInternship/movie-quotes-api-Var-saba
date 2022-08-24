@@ -69,6 +69,10 @@ const socket = ({ io }: { io: Server }) => {
       io.sockets.emit(EVENTS.quotes.emit.SEND_EDITED_QUOTE, editedQuote)
     })
 
+    socket.on(EVENTS.quotes.on.LIKE_QUOTE, (data, quoteId) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_LIKE, data.newLike, quoteId)
+    })
+
     socket.on(EVENTS.movies.on.DISLIKE_QUOTE, (data, quoteId) => {
       io.sockets.emit(
         EVENTS.quotes.emit.SEND_DISLIKE_QUOTE,

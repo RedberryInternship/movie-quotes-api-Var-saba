@@ -2,6 +2,7 @@ import { RequestQuery, RequestBody, Response, Id } from 'types.d'
 import { NotificationReq, AllNotificationReq } from './types.d'
 import mongoose from 'mongoose'
 import { User } from 'models'
+import crypto from 'crypto'
 
 export const addUserNotification = async (
   req: RequestBody<NotificationReq>,
@@ -21,6 +22,7 @@ export const addUserNotification = async (
     }
 
     let newNotification = {
+      _id: crypto.randomBytes(16).toString('hex'),
       date: new Date().toString(),
       notificationType,
       new: true,
@@ -120,13 +122,22 @@ export const getUserNotifications = async (
       return res.status(200).json([])
     }
 
+    let newNotificationCount = 0
+
+    currentUser.notifications.forEach((notification) => {
+      if (notification.new) {
+        newNotificationCount++
+      }
+    })
+
     const userNotifications = {
       notifications: currentUser.notifications
-        .slice((+page - 1) * 6, +page * 6)
-        .reverse(),
+        .reverse()
+        .slice((+page - 1) * 10, +page * 10),
       paginationInfo: {
-        hasMoreQuotes: +page * 6 < notificationCount,
+        hasMoreNotifications: +page * 10 < notificationCount,
       },
+      newNotificationCount,
     }
 
     return res.status(200).json(userNotifications)

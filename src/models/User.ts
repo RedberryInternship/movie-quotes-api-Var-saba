@@ -42,6 +42,9 @@ const userSchema = new Schema<UserModel>(
         notificationType: {
           type: String,
         },
+        _id: {
+          type: String,
+        },
       },
     ],
 
