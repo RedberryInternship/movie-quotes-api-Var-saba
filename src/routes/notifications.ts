@@ -9,7 +9,7 @@ import {
 
 const router = express.Router()
 
-router.get('/mark-as-read', markAsReadNotifications)
+router.put('/mark-as-read', markAsReadNotifications)
 
 router.get('/user-notifications', getUserNotifications)
 

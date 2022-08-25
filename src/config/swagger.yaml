@@ -1173,3 +1173,131 @@ paths:
                     type: string
                 example:
                   message: Enter valid id
+
+  # Notification
+  /user-notifications:
+    get:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: number
+            minimum: 1
+          description: Enter page number depending which part of notifications you want to fetch
+      tags:
+        - Notification
+      description: Fetch notifications of certain user
+      responses:
+        '200':
+          description: Notifications fetched successfully
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /add-notification:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Notification
+      description: Add new notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiverId:
+                  type: string
+                senderId:
+                  type: string
+                notificationType:
+                  type: string
+            example:
+              receiverId: 62f129f76039ca61e0b44654
+              senderId: 62f129f76039ca61e0b44654
+              notificationType: 'like'
+      responses:
+        '201':
+          description: Notification added successfully
+        '404':
+          description: Sender or receiver not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /mark-as-read:
+    put:
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+      tags:
+        - Notification
+      description: Mark user notifications as read
+      responses:
+        '200':
+          description: Notifications marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Notifications marked as read
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: User notification list is empty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User notification list is empty
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
