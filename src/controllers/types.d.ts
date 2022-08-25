@@ -33,7 +33,7 @@ export type ChangeMemberReq = {
 }
 
 export type NewEmailReq = {
-  user: string
+  userId: string
   token: string
 }
 
@@ -78,4 +78,15 @@ export type NewsFeedRequestQuery = {
   query: {
     searchValue: string
   }
+}
+
+export type NotificationReq = {
+  notificationType: string
+  receiverId: string
+  senderId: string
+}
+
+export type AllNotificationReq = {
+  page: string
+  id: string
 }

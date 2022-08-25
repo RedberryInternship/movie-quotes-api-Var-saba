@@ -26,6 +26,28 @@ const userSchema = new Schema<UserModel>(
 
     password: { type: String },
 
+    notifications: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: 'user',
+        },
+        date: {
+          type: String,
+        },
+        new: {
+          type: Boolean,
+          default: true,
+        },
+        notificationType: {
+          type: String,
+        },
+        _id: {
+          type: String,
+        },
+      },
+    ],
+
     image: {
       type: String,
     },

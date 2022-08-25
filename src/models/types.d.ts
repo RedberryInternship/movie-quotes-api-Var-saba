@@ -4,6 +4,12 @@ export type UserModel = {
   image: string
   email: string
   name: string
+  notifications: {
+    notificationType: string
+    new: boolean
+    date: string
+    user: object
+  }[]
 }
 
 export type MovieModel = {

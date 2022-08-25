@@ -22,6 +22,7 @@ const EVENTS = {
   quotes: {
     on: {
       ADD_QUOTE_NEWS_FEED: 'ADD_QUOTE_NEWS_FEED',
+      ADD_NOTIFICATION: 'ADD_NOTIFICATION',
       ADD_COMMENT: 'ADD_COMMENT',
       LIKE_QUOTE: 'LIKE_QUOTE',
       EDIT_QUOTE: 'EDIT_QUOTE',
@@ -30,6 +31,7 @@ const EVENTS = {
     },
     emit: {
       SEND_NEW_QUOTE_NEWS_FEED: 'SEND_NEW_QUOTE_NEWS_FEED',
+      SEND_NEW_NOTIFICATION: 'SEND_NEW_NOTIFICATION',
       SEND_DISLIKE_QUOTE: 'SEND_DISLIKE_QUOTE',
       SEND_EDITED_QUOTE: 'SEND_EDITED_QUOTE',
       SEND_NEW_COMMENT: 'SEND_NEW_COMMENT',
@@ -53,7 +55,7 @@ const socket = ({ io }: { io: Server }) => {
       io.sockets.emit(EVENTS.movies.emit.SEND_DELETED_MOVIE_ID, deletedMovieId)
     })
 
-    socket.on(EVENTS.movies.on.DELETE_MOVIE, (deletedQuoteId) => {
+    socket.on(EVENTS.movies.on.DELETE_MOVIE_QUOTE, (deletedQuoteId) => {
       io.sockets.emit(EVENTS.movies.emit.SEND_NEW_MOVIE_QUOTES, deletedQuoteId)
     })
 
@@ -73,6 +75,10 @@ const socket = ({ io }: { io: Server }) => {
       io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_LIKE, data.newLike, quoteId)
     })
 
+    socket.on(EVENTS.quotes.on.ADD_COMMENT, (newComment, quoteId) => {
+      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_COMMENT, newComment, quoteId)
+    })
+
     socket.on(EVENTS.movies.on.DISLIKE_QUOTE, (data, quoteId) => {
       io.sockets.emit(
         EVENTS.quotes.emit.SEND_DISLIKE_QUOTE,
@@ -81,9 +87,16 @@ const socket = ({ io }: { io: Server }) => {
       )
     })
 
-    socket.on(EVENTS.quotes.on.ADD_COMMENT, (newComment, quoteId) => {
-      io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_COMMENT, newComment, quoteId)
-    })
+    socket.on(
+      EVENTS.quotes.on.ADD_NOTIFICATION,
+      (newNotification, receiverId) => {
+        io.sockets.emit(
+          EVENTS.quotes.emit.SEND_NEW_NOTIFICATION,
+          newNotification,
+          receiverId
+        )
+      }
+    )
   })
 }
 

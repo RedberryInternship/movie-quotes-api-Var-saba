@@ -1,3 +1,4 @@
+export { default as notificationsRouter } from './notifications'
 export { default as moviesRouter } from './movies'
 export { default as quoteRouter } from './quotes'
 export { default as userRouter } from './user'

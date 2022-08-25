@@ -141,7 +141,6 @@ export const getUserDetails = async (
 ) => {
   try {
     const { accessToken } = req.query
-
     let email = jwt_decode<Email>(accessToken).email
 
     if (!email) {
@@ -149,7 +148,7 @@ export const getUserDetails = async (
     }
 
     const existingUser = await User.findOne({ email }).select(
-      '-__v -password -verified'
+      '-password -verified -notifications'
     )
 
     if (!existingUser) {

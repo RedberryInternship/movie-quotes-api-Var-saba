@@ -1,3 +1,4 @@
+export { default as userNotificationSchema } from './user-notification-schema'
 export { default as changeQuoteSchema } from './change-quote-schema'
 export { default as googleUserSchema } from './google-user-schema'
 export { default as changeUserSchema } from './change-user-schema'

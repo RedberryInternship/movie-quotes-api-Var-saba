@@ -1,3 +1,4 @@
+export * from './notifications-controller'
 export * from './movies-controller'
 export * from './quotes-controller'
 export * from './user-controller'
