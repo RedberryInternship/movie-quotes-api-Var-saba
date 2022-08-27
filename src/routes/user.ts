@@ -13,6 +13,7 @@ import {
   changePassword,
   getUserDetails,
   uploadUserImg,
+  deleteEmail,
 } from 'controllers'
 
 const router = express.Router()
@@ -49,6 +50,14 @@ router.put(
   changeUserSchema,
   validateRequestSchema,
   ChangeUsername
+)
+
+router.delete(
+  '/secondary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  deleteEmail
 )
 
 export default router

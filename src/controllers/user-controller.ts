@@ -179,3 +179,41 @@ export const addSecondaryEmail = async (
     return res.status(500).json({ message: error.message })
   }
 }
+
+export const deleteEmail = async (
+  req: RequestBody<SecondaryEmailReq>,
+  res: Response
+) => {
+  try {
+    const { id, email } = req.body
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
+    const existingUser = await User.findById(id)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const existingEmail = existingUser.secondaryEmails.find(
+      (item) => item.email === email
+    )
+
+    if (!existingEmail) {
+      return res.status(404).json({
+        message: "Provided email doesn't exist in secondary emails list",
+      })
+    }
+
+    existingUser.secondaryEmails = existingUser.secondaryEmails.filter(
+      (item) => item.email !== email
+    )
+
+    await existingUser.save()
+    return res.status(200).json({ message: 'Email deleted successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}
