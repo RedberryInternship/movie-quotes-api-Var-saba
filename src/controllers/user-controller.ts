@@ -168,18 +168,18 @@ export const addSecondaryEmail = async (
         .json({ message: 'Provided email address is already added' })
     }
 
-    const newEmail = {
-      email,
-      verified: false,
-    }
-
     await existingUser.update({
       $push: {
-        secondaryEmails: newEmail,
+        secondaryEmails: {
+          email,
+          verified: false,
+        },
       },
     })
 
-    return res.status(201).json(newEmail)
+    const currentUser = await User.findById(id)
+
+    return res.status(201).json(currentUser?.secondaryEmails.at(-1))
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
@@ -218,6 +218,70 @@ export const deleteEmail = async (
 
     await existingUser.save()
     return res.status(200).json({ message: 'Email deleted successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+export const makeEmailPrimary = async (
+  req: RequestBody<SecondaryEmailReq>,
+  res: Response
+) => {
+  try {
+    const { id, email } = req.body
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
+    const existingUser = await User.findById(id)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    if (existingUser.email === email) {
+      return res
+        .status(409)
+        .json({ message: 'Provided email is already primary' })
+    }
+
+    const existingEmail = existingUser.secondaryEmails.find(
+      (item) => item.email === email
+    )
+
+    if (!existingEmail) {
+      return res.status(404).json({
+        message: "Provided email doesn't exist in secondary emails list",
+      })
+    }
+
+    if (!existingEmail.verified) {
+      return res.status(409).json({
+        message: 'Email is not verified',
+      })
+    }
+
+    existingUser.secondaryEmails = existingUser.secondaryEmails.filter(
+      (item) => item.email !== email
+    )
+    await existingUser.save()
+
+    await existingUser.update({
+      $push: {
+        secondaryEmails: {
+          email: existingUser.email,
+          verified: true,
+        },
+      },
+    })
+
+    existingUser.email = email
+    await existingUser.save()
+
+    return res
+      .status(200)
+      .json({ message: 'Primary email changed successfully' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

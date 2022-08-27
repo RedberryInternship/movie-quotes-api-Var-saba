@@ -2,19 +2,20 @@ import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
-  secondaryEmailSchema,
-  changeUserSchema,
-  passwordSchema,
-  idSchema,
-} from 'schemas'
-import {
   addSecondaryEmail,
+  makeEmailPrimary,
   ChangeUsername,
   changePassword,
   getUserDetails,
   uploadUserImg,
   deleteEmail,
 } from 'controllers'
+import {
+  secondaryEmailSchema,
+  changeUserSchema,
+  passwordSchema,
+  idSchema,
+} from 'schemas'
 
 const router = express.Router()
 
@@ -50,6 +51,14 @@ router.put(
   changeUserSchema,
   validateRequestSchema,
   ChangeUsername
+)
+
+router.put(
+  '/change-primary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  makeEmailPrimary
 )
 
 router.delete(
