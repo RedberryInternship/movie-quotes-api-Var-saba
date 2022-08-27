@@ -53,7 +53,7 @@ router.put(
 )
 
 router.delete(
-  '/secondary-email',
+  '/delete-secondary-email',
   idSchema,
   secondaryEmailSchema,
   validateRequestSchema,

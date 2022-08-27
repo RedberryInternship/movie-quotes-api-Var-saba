@@ -630,6 +630,48 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /delete-secondary-email:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Delete secondary email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+            example:
+              email: example@gmail.com
+              id: 62cd66b2bc4b70708a73125f
+      responses:
+        '200':
+          description: Secondary email Deleted successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User or email not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
   # Movie
   /movie-genres:
     get:
