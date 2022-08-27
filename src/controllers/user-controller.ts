@@ -1,7 +1,6 @@
 import { ChangePasswordReq, ChangeMemberUsername, Email } from './types.d'
 import jwt_decode from 'jwt-decode'
 import mongoose from 'mongoose'
-import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
@@ -12,35 +11,34 @@ import {
   Response,
 } from 'types.d'
 
-export const changePassword = async (req: ChangePasswordReq, res: Response) => {
+export const changePassword = async (
+  req: RequestBody<ChangePasswordReq>,
+  res: Response
+) => {
   try {
-    const { authorization } = req.headers
-    const { password } = req.body
+    const { password, id } = req.body
 
-    const token = authorization.trim().split(' ')[1]
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET!)
+    const existingUser = await User.findById(id)
 
-    if (verified) {
-      let email = jwt_decode<Email>(token).email
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
 
-      const existingUser = await User.findOne({ email })
-
-      if (!existingUser || !existingUser.password) {
-        return res.status(404).json({ message: `User is not registered!` })
-      }
-
-      const hashedPassword = await bcrypt.hash(password, 12)
-
-      await User.updateOne({ email }, { password: hashedPassword })
-
-      return res.status(200).json({ message: 'Password updated successfully' })
-    } else {
-      return res.status(401).json({
+    if (!existingUser.password) {
+      return res.status(409).json({
         message:
-          'User is not authorized to change password. Token verification failed.',
+          "User is registered with google account. You can't change password of google user.",
       })
     }
+
+    existingUser.password = await bcrypt.hash(password, 12)
+    await existingUser.save()
+
+    return res.status(200).json({ message: 'Password updated successfully' })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

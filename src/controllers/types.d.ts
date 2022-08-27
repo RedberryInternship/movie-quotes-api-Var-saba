@@ -17,12 +17,8 @@ export type RegisterGoogleMemberReq = {
 }
 
 export type ChangePasswordReq = {
-  headers: {
-    authorization: string
-  }
-  body: {
-    password: string
-  }
+  password: string
+  id: string
 }
 
 export type ChangeMemberUsername = {

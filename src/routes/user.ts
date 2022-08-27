@@ -13,8 +13,9 @@ const router = express.Router()
 
 router.get('/user-details', getUserDetails)
 
-router.post(
+router.put(
   '/change-password',
+  idSchema,
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler
