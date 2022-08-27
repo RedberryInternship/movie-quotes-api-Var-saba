@@ -379,63 +379,6 @@ paths:
         '500':
           description: Internal Server Error.
 
-  /change-password:
-    post:
-      security:
-        - bearerAuth: []
-      tags:
-        - User
-      description: Change user password
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                password:
-                  type: string
-            example:
-              password: 'newpassword'
-      responses:
-        '200':
-          description: Password updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: JWT token
-        '401':
-          description: JWT token verification failed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User is not authorized to change password. Token verification failed.
-        '404':
-          description: User account not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User is not registered!
-        '422':
-          description: Unprocessed Entity
-        '500':
-          description: Internal Server Error.
-
   /upload-user-image:
     patch:
       security:
@@ -456,7 +399,7 @@ paths:
                   type: string
                   format: binary
             example:
-              id: '62cd66b2bc4b70708a73125f'
+              id: 62cd66b2bc4b70708a73125f
       responses:
         '201':
           description: User  image uploaded successfully
@@ -493,6 +436,77 @@ paths:
                   message: User not found
         '422':
           description: Unprocessed Entity
+
+  /change-password:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                id:
+                  type: string
+            example:
+              password: newpassword
+              id: 62cd66b2bc4b70708a73125f
+      responses:
+        '200':
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: JWT token
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: You can't change password of google user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is registered with google account. You can't change password of google user.
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
 
   /change-username:
     put:
