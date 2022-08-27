@@ -630,6 +630,77 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /change-primary-email:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change primary email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+            example:
+              email: example@gmail.com
+              id: '62e934bdfc8d986260667984'
+      responses:
+        '200':
+          description: Primary email changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Primary email changed successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User or email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: Provided email is already primary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Provided email is already primary
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
   /delete-secondary-email:
     delete:
       security:

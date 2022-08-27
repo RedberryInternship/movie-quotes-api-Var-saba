@@ -3,7 +3,7 @@ import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
   addSecondaryEmail,
-  makeEmailPrimary,
+  changePrimaryEmail,
   ChangeUsername,
   changePassword,
   getUserDetails,
@@ -58,7 +58,7 @@ router.put(
   idSchema,
   secondaryEmailSchema,
   validateRequestSchema,
-  makeEmailPrimary
+  changePrimaryEmail
 )
 
 router.delete(

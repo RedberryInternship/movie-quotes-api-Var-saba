@@ -223,7 +223,7 @@ export const deleteEmail = async (
   }
 }
 
-export const makeEmailPrimary = async (
+export const changePrimaryEmail = async (
   req: RequestBody<SecondaryEmailReq>,
   res: Response
 ) => {
