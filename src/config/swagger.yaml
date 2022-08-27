@@ -494,13 +494,13 @@ paths:
         '422':
           description: Unprocessed Entity
 
-  /change-user-credentials:
+  /change-username:
     put:
       security:
         - bearerAuth: []
       tags:
         - User
-      description: Change user credentials
+      description: Change username
       requestBody:
         required: true
         content:
@@ -508,22 +508,25 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
+                username:
                   type: string
                 id:
                   type: string
             example:
-              name: name
-              email: example@gmail.com
-              password: newpassword
+              username: username
               id: '62e934bdfc8d986260667984'
       responses:
         '200':
-          description: credentials updated successfully
+          description: Username changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Username changed successfully
         '401':
           description: User is not authorized
           content:
