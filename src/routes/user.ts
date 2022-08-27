@@ -2,6 +2,7 @@ import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
+  secondaryEmailVerificationEmail,
   addSecondaryEmail,
   changePrimaryEmail,
   ChangeUsername,
@@ -20,6 +21,11 @@ import {
 const router = express.Router()
 
 router.get('/user-details', getUserDetails)
+
+router.get(
+  '/secondary-email-verification-email',
+  secondaryEmailVerificationEmail
+)
 
 router.put(
   '/change-password',

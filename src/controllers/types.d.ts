@@ -89,3 +89,8 @@ export type SecondaryEmailReq = {
   email: string
   id: string
 }
+
+export type SecondaryEmailVerification = {
+  secondaryEmail: string
+  id: string
+}
