@@ -157,24 +157,24 @@ export const addSecondaryEmail = async (
       (item) => item.email === email
     )
 
-    if (duplicateEmail) {
+    if (duplicateEmail || existingUser.email === email) {
       return res
         .status(409)
         .json({ message: 'Provided email address is already added' })
     }
 
+    const newEmail = {
+      email,
+      verified: false,
+    }
+
     await existingUser.update({
       $push: {
-        secondaryEmails: {
-          verified: false,
-          email,
-        },
+        secondaryEmails: newEmail,
       },
     })
 
-    return res
-      .status(200)
-      .json({ message: 'Secondary email added successfully' })
+    return res.status(201).json(newEmail)
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

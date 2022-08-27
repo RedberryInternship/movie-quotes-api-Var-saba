@@ -379,6 +379,68 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /secondary-email:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Add secondary email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+            example:
+              email: example@gmail.com
+              id: 62cd66b2bc4b70708a73125f
+      responses:
+        '200':
+          description: Secondary email added successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: Provided email address is already added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Provided email address is already added
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
   /upload-user-image:
     patch:
       security:
