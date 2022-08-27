@@ -1,8 +1,13 @@
-import { ChangePasswordReq, ChangeMemberUsername, Email } from './types.d'
 import jwt_decode from 'jwt-decode'
 import mongoose from 'mongoose'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
+import {
+  ChangeMemberUsername,
+  SecondaryEmailReq,
+  ChangePasswordReq,
+  Email,
+} from './types.d'
 import {
   RequestQuery,
   ImageReqBody,
@@ -128,5 +133,49 @@ export const getUserDetails = async (
     return res.status(500).json({
       message: error.message,
     })
+  }
+}
+
+export const addSecondaryEmail = async (
+  req: RequestBody<SecondaryEmailReq>,
+  res: Response
+) => {
+  try {
+    const { id, email } = req.body
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
+    const existingUser = await User.findById(id)
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    const duplicateEmail = existingUser.secondaryEmails.find(
+      (item) => item.email === email
+    )
+
+    if (duplicateEmail) {
+      return res
+        .status(409)
+        .json({ message: 'Provided email address is already added' })
+    }
+
+    await existingUser.update({
+      $push: {
+        secondaryEmails: {
+          verified: false,
+          email,
+        },
+      },
+    })
+
+    return res
+      .status(200)
+      .json({ message: 'Secondary email added successfully' })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }

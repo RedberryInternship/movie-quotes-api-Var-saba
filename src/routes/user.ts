@@ -1,8 +1,14 @@
-import { changeUserSchema, passwordSchema, idSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
+  secondaryEmailSchema,
+  changeUserSchema,
+  passwordSchema,
+  idSchema,
+} from 'schemas'
+import {
+  addSecondaryEmail,
   ChangeUsername,
   changePassword,
   getUserDetails,
@@ -27,6 +33,14 @@ router.patch(
   idSchema,
   validateRequestSchema,
   uploadUserImg
+)
+
+router.post(
+  '/secondary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  addSecondaryEmail
 )
 
 router.put(

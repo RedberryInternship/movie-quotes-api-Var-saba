@@ -1,4 +1,4 @@
-import { RequestQuery, RequestBody, Response, AuthorizationReq } from 'types.d'
+import { AuthorizationReq, RequestQuery, RequestBody, Response } from 'types.d'
 import { generateEmail, emailData, isLowercase } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'

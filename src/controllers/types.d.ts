@@ -84,3 +84,8 @@ export type AllNotificationReq = {
   page: string
   id: string
 }
+
+export type SecondaryEmailReq = {
+  email: string
+  id: string
+}
