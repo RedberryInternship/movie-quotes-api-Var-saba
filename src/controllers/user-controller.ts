@@ -1,7 +1,6 @@
-import { ChangePasswordReq, ChangeMemberReq, Email } from './types.d'
-import { generateEmail, emailData } from 'utils'
+import { ChangePasswordReq, ChangeMemberUsername, Email } from './types.d'
 import jwt_decode from 'jwt-decode'
-import sgMail from '@sendgrid/mail'
+import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
@@ -74,12 +73,16 @@ export const uploadUserImg = async (
   }
 }
 
-export const changeUserCredentials = async (
-  req: RequestBody<ChangeMemberReq>,
+export const ChangeUsername = async (
+  req: RequestBody<ChangeMemberUsername>,
   res: Response
 ) => {
   try {
-    const { id, email, name, password } = req.body
+    const { id, username } = req.body
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     const currentUser = await User.findById(id)
 
@@ -89,44 +92,11 @@ export const changeUserCredentials = async (
       })
     }
 
-    if (name) {
-      currentUser.name = name
-    }
-
-    if (password && currentUser.password) {
-      const hashedPassword = await bcrypt.hash(password, 12)
-      currentUser.password = hashedPassword
-    }
-
-    if (email && currentUser.password) {
-      const token = jwt.sign({ email }, process.env.JWT_SECRET!)
-
-      const emailTemp = generateEmail(
-        currentUser.name,
-        'email',
-        `/news-feed/user-profile?token=${token}&userId=${currentUser.id}`
-      )
-
-      if (process.env.SENGRID_API_KEY) {
-        sgMail.setApiKey(process.env.SENGRID_API_KEY)
-      }
-
-      const data = emailData(email, 'email address', emailTemp)
-
-      await sgMail.send(data, false, async (err: any) => {
-        if (err) {
-          return res.status(500).json({
-            message: err.message,
-          })
-        }
-      })
-    }
-
+    currentUser.name = username
     await currentUser.save()
+
     return res.status(200).json({
-      message: `User credentials updated successfully.${
-        email ? ' New email verification link sent.' : ''
-      }`,
+      message: 'Username changed successfully',
     })
   } catch (error: any) {
     return res.status(500).json({

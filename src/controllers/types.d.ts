@@ -25,10 +25,8 @@ export type ChangePasswordReq = {
   }
 }
 
-export type ChangeMemberReq = {
-  password?: string
-  email?: string
-  name?: string
+export type ChangeMemberUsername = {
+  username: string
   id: string
 }
 

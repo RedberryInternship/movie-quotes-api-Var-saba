@@ -3,7 +3,7 @@ import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
-  changeUserCredentials,
+  ChangeUsername,
   changePassword,
   getUserDetails,
   uploadUserImg,
@@ -29,11 +29,11 @@ router.patch(
 )
 
 router.put(
-  '/change-user-credentials',
+  '/change-username',
   idSchema,
   changeUserSchema,
   validateRequestSchema,
-  changeUserCredentials
+  ChangeUsername
 )
 
 export default router
