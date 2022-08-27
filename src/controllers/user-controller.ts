@@ -128,6 +128,11 @@ export const getUserDetails = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
+    if (existingUser.secondaryEmails.length > 1) {
+      existingUser.secondaryEmails = existingUser.secondaryEmails.reverse()
+      await existingUser.save()
+    }
+
     return res.status(200).json(existingUser)
   } catch (error: any) {
     return res.status(500).json({
