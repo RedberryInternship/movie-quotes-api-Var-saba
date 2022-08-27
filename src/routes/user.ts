@@ -22,10 +22,7 @@ const router = express.Router()
 
 router.get('/user-details', getUserDetails)
 
-router.get(
-  '/secondary-email-verification-email',
-  secondaryEmailVerificationEmail
-)
+router.get('/secondary-email-verification', secondaryEmailVerificationEmail)
 
 router.put(
   '/change-password',

@@ -348,7 +348,7 @@ export const secondaryEmailVerificationEmail = async (
       })
     }
 
-    return res.status(200).json({
+    return res.status(409).json({
       message:
         "User is registered with google account. You can't add another email.",
     })
