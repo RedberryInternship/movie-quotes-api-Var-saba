@@ -39,6 +39,13 @@ const EVENTS = {
       SEND_NEW_LIKE: 'SEND_NEW_LIKE',
     },
   },
+
+  user: {
+    on: { ADD_SECONDARY_EMAIL: 'ADD_SECONDARY_EMAIL' },
+    emit: {
+      SEND_SECONDARY_EMAIL: 'SEND_SECONDARY_EMAIL',
+    },
+  },
 }
 
 const socket = ({ io }: { io: Server }) => {
@@ -77,6 +84,10 @@ const socket = ({ io }: { io: Server }) => {
 
     socket.on(EVENTS.quotes.on.ADD_COMMENT, (newComment, quoteId) => {
       io.sockets.emit(EVENTS.quotes.emit.SEND_NEW_COMMENT, newComment, quoteId)
+    })
+
+    socket.on(EVENTS.user.on.ADD_SECONDARY_EMAIL, (email) => {
+      socket.emit(EVENTS.user.emit.SEND_SECONDARY_EMAIL, email)
     })
 
     socket.on(EVENTS.movies.on.DISLIKE_QUOTE, (data, quoteId) => {

@@ -199,7 +199,7 @@ export const addSecondaryEmail = async (
     const emailTemp = generateEmail(
       existingUser.name,
       'email',
-      `/?secondaryEmailVerificationToken=${token}`
+      `profile/?secondaryEmailVerificationToken=${token}&emailId=${id}`
     )
 
     sgMail.setApiKey(process.env.SENGRID_API_KEY!)
