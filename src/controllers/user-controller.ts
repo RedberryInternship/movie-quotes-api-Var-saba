@@ -164,6 +164,12 @@ export const addSecondaryEmail = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
+    if (!existingUser.password) {
+      return res
+        .status(409)
+        .json({ message: "Google account user can't add secondary email" })
+    }
+
     const duplicateEmail = existingUser.secondaryEmails.find(
       (item) => item.email === email
     )
@@ -316,43 +322,36 @@ export const secondaryEmailVerificationEmail = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
-    if (existingUser.password) {
-      const existingEmail = existingUser.secondaryEmails.find(
-        (item) => item.email === secondaryEmail
-      )
+    const existingEmail = existingUser.secondaryEmails.find(
+      (item) => item.email === secondaryEmail
+    )
 
-      if (!existingEmail) {
-        return res.status(404).json({ message: 'Email not found' })
-      }
-
-      const token = jwt.sign({ secondaryEmail }, process.env.JWT_SECRET!)
-
-      const emailTemp = generateEmail(
-        existingUser.name,
-        'email',
-        `/?secondaryEmailVerificationToken=${token}`
-      )
-
-      sgMail.setApiKey(process.env.SENGRID_API_KEY!)
-
-      const data = emailData(secondaryEmail, 'email address', emailTemp)
-
-      await sgMail.send(data, false, async (err: any) => {
-        if (err) {
-          return res.status(500).json({
-            message: err.message,
-          })
-        }
-
-        return res.status(200).json({
-          message: 'Email verification link sent. Check your email.',
-        })
-      })
+    if (!existingEmail) {
+      return res.status(404).json({ message: 'Email not found' })
     }
 
-    return res.status(409).json({
-      message:
-        "User is registered with google account. You can't add another email.",
+    const token = jwt.sign({ secondaryEmail }, process.env.JWT_SECRET!)
+
+    const emailTemp = generateEmail(
+      existingUser.name,
+      'email',
+      `/?secondaryEmailVerificationToken=${token}`
+    )
+
+    sgMail.setApiKey(process.env.SENGRID_API_KEY!)
+
+    const data = emailData(secondaryEmail, 'email address', emailTemp)
+
+    await sgMail.send(data, false, async (err: any) => {
+      if (err) {
+        return res.status(500).json({
+          message: err.message,
+        })
+      }
+
+      return res.status(200).json({
+        message: 'Email verification link sent. Check your email.',
+      })
     })
   } catch (error: any) {
     return res.status(500).json({

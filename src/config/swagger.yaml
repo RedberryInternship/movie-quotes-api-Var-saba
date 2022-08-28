@@ -420,17 +420,6 @@ paths:
                     type: string
                 example:
                   message: User or email not found
-        '409':
-          description: User is registered with google account. You can't add another email.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User is registered with google account. You can't add another email.
         '422':
           description: Unprocessed Entity
         '500':
@@ -483,16 +472,7 @@ paths:
                 example:
                   message: User not found
         '409':
-          description: Provided email address is already added
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Provided email address is already added
+          description: Provided email address is already added / Google account user can't add secondary email
         '422':
           description: Unprocessed Entity
         '500':
