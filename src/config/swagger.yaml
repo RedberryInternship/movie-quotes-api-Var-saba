@@ -758,6 +758,50 @@ paths:
         '500':
           description: Internal Server Error.
 
+  /verify-secondary-email:
+    put:
+      parameters:
+        - in: query
+          name: secondaryEmailVerificationToken
+          required: true
+          schema:
+            type: string
+          description: Enter jwt token which you got from email verification email
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+      tags:
+        - User
+      description: Verify secondary email
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Email verified successfully
+        '404':
+          description: User or email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User or email not found
+        '422':
+          description: Unprocessed Entity
+
   /delete-secondary-email:
     delete:
       security:
