@@ -1,12 +1,10 @@
-import { emailData, generateEmail, validEmail } from 'utils'
+import { emailData, generateEmail, validId } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
-import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
-  SecondaryEmailVerification,
   SecondaryEmailActivation,
   ChangeMemberUsername,
   SecondaryEmailReq,
@@ -29,7 +27,7 @@ export const changePassword = async (
   try {
     const { password, id } = req.body
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -60,12 +58,19 @@ export const uploadUserImg = async (
   res: Response
 ) => {
   try {
-    const currentUser = await User.findById(req.body.id)
+    const { id, fileValidationError } = req.body
+
+    const currentUser = await User.findById(id)
+
+    if (!validId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
     if (!currentUser) {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    if (req.body.fileValidationError) {
+    if (fileValidationError) {
       return res.status(422).json({ message: 'Upload only image' })
     }
 
@@ -89,7 +94,7 @@ export const ChangeUsername = async (
   try {
     const { id, username } = req.body
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -154,7 +159,7 @@ export const addSecondaryEmail = async (
   try {
     const { id, email } = req.body
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -224,7 +229,7 @@ export const deleteEmail = async (
   try {
     const { id, email } = req.body
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -262,7 +267,7 @@ export const changePrimaryEmail = async (
   try {
     const { id, email } = req.body
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -326,7 +331,7 @@ export const secondaryEmailActivation = async (
   try {
     const { id, secondaryEmailVerificationToken } = req.query
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid user id' })
     }
 

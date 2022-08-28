@@ -1,6 +1,6 @@
 import { RequestQuery, RequestBody, Response, Id } from 'types.d'
 import { NotificationReq, AllNotificationReq } from './types.d'
-import mongoose from 'mongoose'
+import { validId } from 'utils'
 import { User } from 'models'
 import crypto from 'crypto'
 
@@ -10,6 +10,10 @@ export const addUserNotification = async (
 ) => {
   try {
     const { receiverId, senderId, notificationType } = req.body
+
+    if (!validId(receiverId) || !validId(senderId)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     const senderUser = await User.findById(senderId).select('_id name image')
     if (!senderUser) {
@@ -55,7 +59,7 @@ export const markAsReadNotifications = async (
   try {
     const { id } = req.query
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
@@ -96,7 +100,7 @@ export const getUserNotifications = async (
   try {
     const { id, page } = req.query
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 

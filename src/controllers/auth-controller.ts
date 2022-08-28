@@ -1,5 +1,4 @@
 import { AuthorizationReq, RequestQuery, RequestBody, Response } from 'types.d'
-import { generateEmail, emailData, isLowercase, validEmail } from 'utils'
 import jwt_decode from 'jwt-decode'
 import sgMail from '@sendgrid/mail'
 import jwt from 'jsonwebtoken'
@@ -12,6 +11,13 @@ import {
   NewEmailReq,
   Email,
 } from './types.d'
+import {
+  generateEmail,
+  emailData,
+  isLowercase,
+  validEmail,
+  validId,
+} from 'utils'
 
 export const registerUser = async (
   req: RequestBody<RegisterMemberReq>,
@@ -217,6 +223,10 @@ export const activateNewUserEmail = async (
 ) => {
   try {
     const { token, userId } = req.query
+
+    if (!validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid userId id' })
+    }
 
     let newEmail = jwt_decode<Email>(token).email
 

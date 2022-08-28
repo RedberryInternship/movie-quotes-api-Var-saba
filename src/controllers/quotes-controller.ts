@@ -1,4 +1,4 @@
-import { deleteFile, populateQuote, includeChecker } from 'utils'
+import { deleteFile, populateQuote, includeChecker, validId } from 'utils'
 import { RequestBody, Response, QueryId } from 'types.d'
 import { Quote, Movie, QuoteModel, User } from 'models'
 import mongoose from 'mongoose'
@@ -72,6 +72,10 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
 
 export const deleteQuote = async (req: QueryId, res: Response) => {
   try {
+    if (validId(req.query.id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
     const id = { _id: new mongoose.Types.ObjectId(req.query.id) }
 
     const quote = await Quote.findOne(id)
@@ -107,6 +111,10 @@ export const changeQuote = async (
 ) => {
   try {
     const { id, quoteEn, quoteGe } = req.body
+
+    if (!validId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     const existingQuote = await Quote.findById(id)
       .select('-movie')
@@ -147,6 +155,10 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
   try {
     const { id } = req.query
 
+    if (!validId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
     const existingMovie = await Movie.findById(id)
       .select('quotes')
       .populate({
@@ -183,6 +195,10 @@ export const getCertainMovieQuotes = async (req: QueryId, res: Response) => {
 export const likeQuote = async (req: LikeQueryReq, res: Response) => {
   try {
     const { quoteId, userId } = req.query
+
+    if (!validId(quoteId) || !validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     const id = { _id: new mongoose.Types.ObjectId(quoteId) }
 
@@ -223,6 +239,10 @@ export const commentOnQuote = async (
   try {
     const { commentText, quoteId, userId } = req.body
 
+    if (!validId(quoteId) || !validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
+
     const existingQuote = await Quote.findById(quoteId)
 
     if (!existingQuote) {
@@ -261,6 +281,10 @@ export const commentOnQuote = async (
 export const dislikeQuote = async (req: LikeQueryReq, res: Response) => {
   try {
     const { quoteId, userId } = req.query
+
+    if (!validId(quoteId) || !validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     const id = { _id: new mongoose.Types.ObjectId(quoteId) }
 
