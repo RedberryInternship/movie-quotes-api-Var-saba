@@ -183,8 +183,8 @@ paths:
                 password:
                   type: number
             example:
-              name: 'john'
-              email: 'john@gmail.com'
+              name: john
+              email: john@gmail.com
               password: 'password'
       responses:
         '201':
@@ -376,52 +376,6 @@ paths:
                     type: string
                 example:
                   message: User not found
-        '500':
-          description: Internal Server Error.
-
-  /secondary-email-verification:
-    get:
-      parameters:
-        - in: query
-          name: secondaryEmail
-          required: true
-          schema:
-            type: string
-          description: Enter secondary email address
-        - in: query
-          name: id
-          required: true
-          schema:
-            type: string
-          description: Enter user id
-      tags:
-        - User
-      description: Send secondary email verification email with verification link
-      responses:
-        '200':
-          description: Email verification link sent. Check your email.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Email verification link sent. Check your email.
-        '404':
-          description: User or email not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User or email not found
-        '422':
-          description: Unprocessed Entity
         '500':
           description: Internal Server Error.
 
