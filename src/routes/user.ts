@@ -3,6 +3,7 @@ import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
   secondaryEmailVerificationEmail,
+  secondaryEmailActivation,
   addSecondaryEmail,
   changePrimaryEmail,
   ChangeUsername,
@@ -31,6 +32,8 @@ router.put(
   validateRequestSchema,
   changePassword as RequestHandler
 )
+
+router.put('/verify-secondary-email', secondaryEmailActivation)
 
 router.patch(
   '/upload-user-image',

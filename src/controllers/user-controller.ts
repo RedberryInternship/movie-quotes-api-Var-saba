@@ -7,9 +7,11 @@ import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
   SecondaryEmailVerification,
+  SecondaryEmailActivation,
   ChangeMemberUsername,
   SecondaryEmailReq,
   ChangePasswordReq,
+  SecondaryEmail,
   Email,
 } from './types.d'
 import {
@@ -356,5 +358,47 @@ export const secondaryEmailVerificationEmail = async (
     return res.status(500).json({
       message: error.message,
     })
+  }
+}
+
+export const secondaryEmailActivation = async (
+  req: RequestQuery<SecondaryEmailActivation>,
+  res: Response
+) => {
+  try {
+    const { id, secondaryEmailVerificationToken } = req.query
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(422).json({ message: 'Enter valid user id' })
+    }
+
+    if (!secondaryEmailVerificationToken) {
+      return res.status(422).json({ message: 'verification token is required' })
+    }
+
+    const existingUser = await User.findById(id)
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    let userEmil = jwt_decode<SecondaryEmail>(
+      secondaryEmailVerificationToken
+    ).secondaryEmail
+
+    const existingEmail = existingUser.secondaryEmails.find(
+      (item) => item.email === userEmil
+    )
+
+    if (!existingEmail) {
+      return res.status(404).json({
+        message: "Provided email doesn't exist in secondary emails list",
+      })
+    }
+
+    existingEmail.verified = true
+    await existingUser.save()
+    return res.status(200).json({ message: 'Email verified successfully' })
+  } catch (error: any) {
+    return res.status(422).json({ message: 'JWT token is invalid' })
   }
 }

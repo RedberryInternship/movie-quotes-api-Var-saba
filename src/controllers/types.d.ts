@@ -1,3 +1,4 @@
+export type SecondaryEmail = { secondaryEmail: string }
 export type Email = { email: string }
 
 export type EmailActivationReq = {
@@ -92,5 +93,10 @@ export type SecondaryEmailReq = {
 
 export type SecondaryEmailVerification = {
   secondaryEmail: string
+  id: string
+}
+
+export type SecondaryEmailActivation = {
+  secondaryEmailVerificationToken: string
   id: string
 }
