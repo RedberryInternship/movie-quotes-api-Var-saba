@@ -690,16 +690,7 @@ paths:
               id: '62e934bdfc8d986260667984'
       responses:
         '200':
-          description: Primary email changed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Primary email changed successfully
+          description: Get JWT token after change primary email
         '401':
           description: User is not authorized
           content:

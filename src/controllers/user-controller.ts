@@ -291,9 +291,9 @@ export const changePrimaryEmail = async (
     existingUser.email = email
     await existingUser.save()
 
-    return res
-      .status(200)
-      .json({ message: 'Primary email changed successfully' })
+    const token = jwt.sign({ email, id }, process.env.JWT_SECRET!)
+
+    return res.status(200).json({ token })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }
