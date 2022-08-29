@@ -1,3 +1,4 @@
+export type SecondaryEmail = { secondaryEmail: string }
 export type Email = { email: string }
 
 export type EmailActivationReq = {
@@ -17,18 +18,12 @@ export type RegisterGoogleMemberReq = {
 }
 
 export type ChangePasswordReq = {
-  headers: {
-    authorization: string
-  }
-  body: {
-    password: string
-  }
+  password: string
+  id: string
 }
 
-export type ChangeMemberReq = {
-  password?: string
-  email?: string
-  name?: string
+export type ChangeMemberUsername = {
+  username: string
   id: string
 }
 
@@ -88,5 +83,20 @@ export type NotificationReq = {
 
 export type AllNotificationReq = {
   page: string
+  id: string
+}
+
+export type SecondaryEmailReq = {
+  email: string
+  id: string
+}
+
+export type SecondaryEmailVerification = {
+  secondaryEmail: string
+  id: string
+}
+
+export type SecondaryEmailActivation = {
+  secondaryEmailVerificationToken: string
   id: string
 }

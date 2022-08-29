@@ -10,6 +10,7 @@ export type UserModel = {
     date: string
     user: object
   }[]
+  secondaryEmails: { email: string; verified: boolean }[]
 }
 
 export type MovieModel = {

@@ -183,8 +183,8 @@ paths:
                 password:
                   type: number
             example:
-              name: 'john'
-              email: 'john@gmail.com'
+              name: john
+              email: john@gmail.com
               password: 'password'
       responses:
         '201':
@@ -379,13 +379,13 @@ paths:
         '500':
           description: Internal Server Error.
 
-  /change-password:
+  /secondary-email:
     post:
       security:
         - bearerAuth: []
       tags:
         - User
-      description: Change user password
+      description: Add secondary email
       requestBody:
         required: true
         content:
@@ -393,24 +393,18 @@ paths:
             schema:
               type: object
               properties:
-                password:
+                email:
+                  type: string
+                id:
                   type: string
             example:
-              password: 'newpassword'
+              email: example@gmail.com
+              id: 62cd66b2bc4b70708a73125f
       responses:
         '200':
-          description: Password updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: JWT token
+          description: Secondary email added successfully
         '401':
-          description: JWT token verification failed
+          description: User is not authorized
           content:
             application/json:
               schema:
@@ -419,9 +413,9 @@ paths:
                   message:
                     type: string
                 example:
-                  message: User is not authorized to change password. Token verification failed.
+                  message: User is not authorized
         '404':
-          description: User account not found
+          description: User not found
           content:
             application/json:
               schema:
@@ -430,7 +424,9 @@ paths:
                   message:
                     type: string
                 example:
-                  message: User is not registered!
+                  message: User not found
+        '409':
+          description: Provided email address is already added / Google account user can't add secondary email
         '422':
           description: Unprocessed Entity
         '500':
@@ -456,7 +452,7 @@ paths:
                   type: string
                   format: binary
             example:
-              id: '62cd66b2bc4b70708a73125f'
+              id: 62cd66b2bc4b70708a73125f
       responses:
         '201':
           description: User  image uploaded successfully
@@ -494,13 +490,13 @@ paths:
         '422':
           description: Unprocessed Entity
 
-  /change-user-credentials:
+  /change-password:
     put:
       security:
         - bearerAuth: []
       tags:
         - User
-      description: Change user credentials
+      description: Change user password
       requestBody:
         required: true
         content:
@@ -508,22 +504,25 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                email:
-                  type: string
                 password:
                   type: string
                 id:
                   type: string
             example:
-              name: name
-              email: example@gmail.com
               password: newpassword
-              id: '62e934bdfc8d986260667984'
+              id: 62cd66b2bc4b70708a73125f
       responses:
         '200':
-          description: credentials updated successfully
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: JWT token
         '401':
           description: User is not authorized
           content:
@@ -546,6 +545,225 @@ paths:
                     type: string
                 example:
                   message: User not found
+        '409':
+          description: You can't change password of google user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is registered with google account. You can't change password of google user.
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /change-username:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change username
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                id:
+                  type: string
+            example:
+              username: username
+              id: '62e934bdfc8d986260667984'
+      responses:
+        '200':
+          description: Username changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Username changed successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /change-primary-email:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Change primary email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+            example:
+              email: example@gmail.com
+              id: '62e934bdfc8d986260667984'
+      responses:
+        '200':
+          description: Get JWT token after change primary email
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User or email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User not found
+        '409':
+          description: Provided email is already primary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Provided email is already primary
+        '422':
+          description: Unprocessed Entity
+        '500':
+          description: Internal Server Error.
+
+  /verify-secondary-email:
+    put:
+      parameters:
+        - in: query
+          name: secondaryEmailVerificationToken
+          required: true
+          schema:
+            type: string
+          description: Enter jwt token which you got from email verification email
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+      tags:
+        - User
+      description: Verify secondary email
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: Email verified successfully
+        '404':
+          description: User or email not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User or email not found
+        '422':
+          description: Unprocessed Entity
+
+  /delete-secondary-email:
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Delete secondary email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+            example:
+              email: example@gmail.com
+              id: 62cd66b2bc4b70708a73125f
+      responses:
+        '200':
+          description: Secondary email Deleted successfully
+        '401':
+          description: User is not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: User is not authorized
+        '404':
+          description: User or email not found
         '422':
           description: Unprocessed Entity
         '500':

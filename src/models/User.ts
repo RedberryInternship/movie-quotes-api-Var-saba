@@ -48,6 +48,17 @@ const userSchema = new Schema<UserModel>(
       },
     ],
 
+    secondaryEmails: [
+      {
+        email: {
+          type: String,
+        },
+        verified: {
+          type: Boolean,
+        },
+      },
+    ],
+
     image: {
       type: String,
     },

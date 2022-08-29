@@ -1,7 +1,7 @@
 import { Response, RequestBody, RequestQuery, QueryId } from 'types.d'
 import { MovieModel, Movie, User, Quote } from 'models'
+import { deleteFile, validId } from 'utils'
 import { ChangeMovieReq } from './types.d'
-import { deleteFile } from 'utils'
 import mongoose from 'mongoose'
 import fs from 'fs'
 
@@ -36,6 +36,10 @@ export const addMovie = async (req: RequestBody<MovieModel>, res: Response) => {
       budget,
       userId,
     } = req.body
+
+    if (!validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid user id' })
+    }
 
     if (!req.file) {
       return res.status(422).json({ message: 'Upload movie image' })
@@ -82,6 +86,10 @@ export const getAllMovies = async (
   try {
     const { userId } = req.query
 
+    if (!validId(userId)) {
+      return res.status(422).json({ message: 'Enter valid user id' })
+    }
+
     const existingUser = await User.findById(userId)
 
     if (!existingUser) {
@@ -107,6 +115,10 @@ export const getAllMovies = async (
 
 export const deleteMovie = async (req: QueryId, res: Response) => {
   try {
+    if (!validId(req.query.id)) {
+      return res.status(422).json({ message: 'Enter valid movie id' })
+    }
+
     const id = { _id: new mongoose.Types.ObjectId(req.query.id) }
 
     const movie = await Movie.findOne(id)
@@ -146,6 +158,10 @@ export const changeMovie = async (
     } = req.body
 
     const existingMovie = await Movie.findById(id)
+
+    if (!validId(id)) {
+      return res.status(422).json({ message: 'Enter valid id' })
+    }
 
     if (!existingMovie) {
       return res.status(404).json({ message: 'Movie not found' })

@@ -1,24 +1,36 @@
-import { changeUserSchema, passwordSchema, idSchema } from 'schemas'
 import { validateRequestSchema } from 'middlewares'
 import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
 import {
-  changeUserCredentials,
+  secondaryEmailActivation,
+  addSecondaryEmail,
+  changePrimaryEmail,
+  ChangeUsername,
   changePassword,
   getUserDetails,
   uploadUserImg,
+  deleteEmail,
 } from 'controllers'
+import {
+  secondaryEmailSchema,
+  changeUserSchema,
+  passwordSchema,
+  idSchema,
+} from 'schemas'
 
 const router = express.Router()
 
 router.get('/user-details', getUserDetails)
 
-router.post(
+router.put(
   '/change-password',
+  idSchema,
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler
 )
+
+router.put('/verify-secondary-email', secondaryEmailActivation)
 
 router.patch(
   '/upload-user-image',
@@ -28,12 +40,36 @@ router.patch(
   uploadUserImg
 )
 
+router.post(
+  '/secondary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  addSecondaryEmail
+)
+
 router.put(
-  '/change-user-credentials',
+  '/change-username',
   idSchema,
   changeUserSchema,
   validateRequestSchema,
-  changeUserCredentials
+  ChangeUsername
+)
+
+router.put(
+  '/change-primary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  changePrimaryEmail
+)
+
+router.delete(
+  '/delete-secondary-email',
+  idSchema,
+  secondaryEmailSchema,
+  validateRequestSchema,
+  deleteEmail
 )
 
 export default router
