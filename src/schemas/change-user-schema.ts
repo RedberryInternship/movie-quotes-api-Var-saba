@@ -6,10 +6,10 @@ const changeUserSchema = [
     .trim()
     .isLength({
       min: 3,
-      max: 15,
+      max: 20,
     })
     .withMessage(
-      'Username should include at least 3 & max.15 lower case characters'
+      'Username should include at least 3 & max.20 lower case characters'
     ),
 ]
 

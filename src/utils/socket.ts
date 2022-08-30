@@ -41,9 +41,15 @@ const EVENTS = {
   },
 
   user: {
-    on: { ADD_SECONDARY_EMAIL: 'ADD_SECONDARY_EMAIL' },
+    on: {
+      ADD_SECONDARY_EMAIL: 'ADD_SECONDARY_EMAIL',
+      UPLOAD_USER_IMAGE: 'UPLOAD_USER_IMAGE',
+      CHANGE_USERNAME: 'CHANGE_USERNAME',
+    },
     emit: {
       SEND_SECONDARY_EMAIL: 'SEND_SECONDARY_EMAIL',
+      SEND_NEW_USERNAME: 'SEND_NEW_USERNAME',
+      SEND_NEW_IMAGE: 'SEND_NEW_IMAGE',
     },
   },
 }
@@ -56,6 +62,10 @@ const socket = ({ io }: { io: Server }) => {
 
     socket.on(EVENTS.movies.on.UPDATE_MOVIE, (updatedMovie) => {
       socket.emit(EVENTS.movies.emit.SEND_UPDATED_MOVIE, updatedMovie)
+    })
+
+    socket.on(EVENTS.user.on.UPLOAD_USER_IMAGE, (data) => {
+      socket.emit(EVENTS.user.emit.SEND_NEW_IMAGE, data.image)
     })
 
     socket.on(EVENTS.movies.on.DELETE_MOVIE, (deletedMovieId) => {

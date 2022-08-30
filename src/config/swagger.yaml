@@ -456,15 +456,6 @@ paths:
       responses:
         '201':
           description: User  image uploaded successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: User image uploaded successfully
         '401':
           description: User is not authorized
           content:

@@ -78,9 +78,7 @@ export const uploadUserImg = async (
       currentUser.image = req.file.path.substring(7)
 
       await currentUser.save()
-      return res.status(201).json({
-        message: 'User image uploaded successfully',
-      })
+      return res.status(201).json({ image: currentUser.image })
     } else return res.status(422).json({ message: 'Upload user image' })
   } catch (error) {
     return res.status(422).json({ message: 'User Id is not valid' })
