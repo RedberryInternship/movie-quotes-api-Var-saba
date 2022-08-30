@@ -104,12 +104,20 @@ export const ChangeUsername = async (
       })
     }
 
+    const duplicateUsernames = await (
+      await User.find()
+    ).filter((user) => user.name === username)
+
+    if (duplicateUsernames.length > 0) {
+      return res.status(409).json({
+        message: 'User with this username is already registered',
+      })
+    }
+
     currentUser.name = username
     await currentUser.save()
 
-    return res.status(200).json({
-      message: 'Username changed successfully',
-    })
+    return res.status(200).json({ username: currentUser.name })
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,

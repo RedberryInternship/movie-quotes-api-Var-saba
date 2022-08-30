@@ -68,6 +68,10 @@ const socket = ({ io }: { io: Server }) => {
       socket.emit(EVENTS.user.emit.SEND_NEW_IMAGE, data.image)
     })
 
+    socket.on(EVENTS.user.on.CHANGE_USERNAME, (username) => {
+      socket.emit(EVENTS.user.emit.SEND_NEW_USERNAME, username)
+    })
+
     socket.on(EVENTS.movies.on.DELETE_MOVIE, (deletedMovieId) => {
       io.sockets.emit(EVENTS.movies.emit.SEND_DELETED_MOVIE_ID, deletedMovieId)
     })

@@ -576,15 +576,6 @@ paths:
       responses:
         '200':
           description: Username changed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: Username changed successfully
         '401':
           description: User is not authorized
           content:
