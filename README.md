@@ -1,6 +1,6 @@
-<h1>API for Movie Quotes</h1>
+# API for Movie Quotes
 
-##### <p>Using the API you can do CRUD operations on quotes, movies and application users</p>
+##### Using the API you can do CRUD operations on quotes, movies and application users
 
 API base uri: movie-quotes-api.sabavar.redberryinternship.ge
 API documentation: movie-quotes-api.sabavar.redberryinternship.ge/api-docs
@@ -10,12 +10,14 @@ Movie Quotes production uri: movie-quotes.sabavar.redberryinternship.ge
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Prerequisites](#prerequisites)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Resources](#resources)
+- [API for Movie Quotes](#api-for-movie-quotes)
+        - [Using the API you can do CRUD operations on quotes, movies and application users](#using-the-api-you-can-do-crud-operations-on-quotes-movies-and-application-users)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Tech Stack](#tech-stack)
+  - [Getting Started](#getting-started)
+  - [Project Structure](#project-structure)
+  - [Resources](#resources)
 
 ## Prerequisites
 
