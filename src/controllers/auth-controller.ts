@@ -155,7 +155,7 @@ export const verifyUserEmail = async (
         const emailTemp = generateEmail(
           existingUser.name,
           'email',
-          `/?emailVerificationToken=${token}`
+          `/?emailVerificationToken=${token}&id=${existingUser.id}`
         )
 
         if (process.env.SENGRID_API_KEY) {

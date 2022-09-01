@@ -20,12 +20,10 @@ import {
   Response,
 } from 'types.d'
 
-export const changePassword = async (
-  req: RequestBody<ChangePasswordReq>,
-  res: Response
-) => {
+export const changePassword = async (req: ChangePasswordReq, res: Response) => {
   try {
-    const { password, id } = req.body
+    const { password } = req.body
+    const { id } = req.query
 
     if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
@@ -106,7 +104,7 @@ export const ChangeUsername = async (
 
     const duplicateUsernames = await (
       await User.find()
-    ).filter((user) => user.name === username)
+    ).filter((user) => user.name === username && user.id !== id)
 
     if (duplicateUsernames.length > 0) {
       return res.status(409).json({
@@ -229,11 +227,11 @@ export const addSecondaryEmail = async (
 }
 
 export const deleteEmail = async (
-  req: RequestBody<SecondaryEmailReq>,
+  req: RequestQuery<SecondaryEmailReq>,
   res: Response
 ) => {
   try {
-    const { id, email } = req.body
+    const { id, email } = req.query
 
     if (!validId(id)) {
       return res.status(422).json({ message: 'Enter valid id' })
@@ -319,12 +317,20 @@ export const changePrimaryEmail = async (
       },
     })
 
+    await existingUser.save()
+
     existingUser.email = email
+
     await existingUser.save()
 
     const token = jwt.sign({ email, id }, process.env.JWT_SECRET!)
 
-    return res.status(200).json({ token })
+    const updatedList = await User.findById(id)
+
+    return res.status(200).json({
+      token,
+      newSecondaryEmail: updatedList?.secondaryEmails.at(-1)!,
+    })
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   }

@@ -24,7 +24,6 @@ router.get('/user-details', getUserDetails)
 
 router.put(
   '/change-password',
-  idSchema,
   passwordSchema,
   validateRequestSchema,
   changePassword as RequestHandler

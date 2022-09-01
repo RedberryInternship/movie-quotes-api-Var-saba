@@ -42,11 +42,15 @@ const EVENTS = {
 
   user: {
     on: {
+      CHANGE_PRIMARY_EMAIL: 'CHANGE_PRIMARY_EMAIL',
       ADD_SECONDARY_EMAIL: 'ADD_SECONDARY_EMAIL',
       UPLOAD_USER_IMAGE: 'UPLOAD_USER_IMAGE',
       CHANGE_USERNAME: 'CHANGE_USERNAME',
+      DELETE_EMAIL: 'DELETE_EMAIL',
     },
     emit: {
+      SEND_NEW_PRIMARY_EMAIL: 'SEND_NEW_PRIMARY_EMAIL',
+      SEND_DELETED_EMAIL_IDS: 'SEND_DELETED_EMAIL_IDS',
       SEND_SECONDARY_EMAIL: 'SEND_SECONDARY_EMAIL',
       SEND_NEW_USERNAME: 'SEND_NEW_USERNAME',
       SEND_NEW_IMAGE: 'SEND_NEW_IMAGE',
@@ -64,8 +68,23 @@ const socket = ({ io }: { io: Server }) => {
       socket.emit(EVENTS.movies.emit.SEND_UPDATED_MOVIE, updatedMovie)
     })
 
+    socket.on(
+      EVENTS.user.on.CHANGE_PRIMARY_EMAIL,
+      (primaryEmail, oldPrimary) => {
+        socket.emit(
+          EVENTS.user.emit.SEND_NEW_PRIMARY_EMAIL,
+          primaryEmail,
+          oldPrimary
+        )
+      }
+    )
+
     socket.on(EVENTS.user.on.UPLOAD_USER_IMAGE, (data) => {
       socket.emit(EVENTS.user.emit.SEND_NEW_IMAGE, data.image)
+    })
+
+    socket.on(EVENTS.user.on.DELETE_EMAIL, (deletedEmail) => {
+      socket.emit(EVENTS.user.emit.SEND_DELETED_EMAIL_IDS, deletedEmail)
     })
 
     socket.on(EVENTS.user.on.CHANGE_USERNAME, (username) => {

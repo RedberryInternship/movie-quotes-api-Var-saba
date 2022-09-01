@@ -483,6 +483,13 @@ paths:
 
   /change-password:
     put:
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
       security:
         - bearerAuth: []
       tags:
@@ -497,11 +504,8 @@ paths:
               properties:
                 password:
                   type: string
-                id:
-                  type: string
             example:
               password: newpassword
-              id: 62cd66b2bc4b70708a73125f
       responses:
         '200':
           description: Password updated successfully
@@ -711,25 +715,24 @@ paths:
 
   /delete-secondary-email:
     delete:
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Enter user id
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+          description: Enter secondary email address
       security:
         - bearerAuth: []
       tags:
         - User
       description: Delete secondary email
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                id:
-                  type: string
-            example:
-              email: example@gmail.com
-              id: 62cd66b2bc4b70708a73125f
       responses:
         '200':
           description: Secondary email Deleted successfully
