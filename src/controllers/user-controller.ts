@@ -9,7 +9,6 @@ import {
   ChangeMemberUsername,
   SecondaryEmailReq,
   ChangePasswordReq,
-  SecondaryEmail,
   Email,
 } from './types.d'
 import {
@@ -203,7 +202,7 @@ export const addSecondaryEmail = async (
     const emailTemp = generateEmail(
       existingUser.name,
       'email',
-      `profile/?secondaryEmailVerificationToken=${token}&emailId=${id}`
+      `/profile/?secondaryEmailVerificationToken=${token}&email=${email}`
     )
 
     sgMail.setApiKey(process.env.SENGRID_API_KEY!)
@@ -356,9 +355,7 @@ export const secondaryEmailActivation = async (
       return res.status(404).json({ message: 'User not found' })
     }
 
-    let userEmil = jwt_decode<SecondaryEmail>(
-      secondaryEmailVerificationToken
-    ).secondaryEmail
+    let userEmil = jwt_decode<Email>(secondaryEmailVerificationToken).email
 
     const existingEmail = existingUser.secondaryEmails.find(
       (item) => item.email === userEmil

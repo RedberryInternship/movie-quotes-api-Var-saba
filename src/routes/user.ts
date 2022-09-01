@@ -1,6 +1,6 @@
 import { validateRequestSchema } from 'middlewares'
-import express, { RequestHandler } from 'express'
 import { uploadUserImage } from 'utils'
+import express from 'express'
 import {
   secondaryEmailActivation,
   addSecondaryEmail,
@@ -26,7 +26,7 @@ router.put(
   '/change-password',
   passwordSchema,
   validateRequestSchema,
-  changePassword as RequestHandler
+  changePassword
 )
 
 router.put('/verify-secondary-email', secondaryEmailActivation)

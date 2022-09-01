@@ -42,6 +42,7 @@ const EVENTS = {
 
   user: {
     on: {
+      VERIFY_SECONDARY_EMAIL: 'VERIFY_SECONDARY_EMAIL',
       CHANGE_PRIMARY_EMAIL: 'CHANGE_PRIMARY_EMAIL',
       ADD_SECONDARY_EMAIL: 'ADD_SECONDARY_EMAIL',
       UPLOAD_USER_IMAGE: 'UPLOAD_USER_IMAGE',
@@ -49,6 +50,7 @@ const EVENTS = {
       DELETE_EMAIL: 'DELETE_EMAIL',
     },
     emit: {
+      SEND_VERIFIED_SECONDARY_EMAIL: 'SEND_VERIFIED_SECONDARY_EMAIL',
       SEND_NEW_PRIMARY_EMAIL: 'SEND_NEW_PRIMARY_EMAIL',
       SEND_DELETED_EMAIL_IDS: 'SEND_DELETED_EMAIL_IDS',
       SEND_SECONDARY_EMAIL: 'SEND_SECONDARY_EMAIL',
@@ -81,6 +83,10 @@ const socket = ({ io }: { io: Server }) => {
 
     socket.on(EVENTS.user.on.UPLOAD_USER_IMAGE, (data) => {
       socket.emit(EVENTS.user.emit.SEND_NEW_IMAGE, data.image)
+    })
+
+    socket.on(EVENTS.user.on.VERIFY_SECONDARY_EMAIL, (email) => {
+      socket.emit(EVENTS.user.emit.SEND_VERIFIED_SECONDARY_EMAIL, email)
     })
 
     socket.on(EVENTS.user.on.DELETE_EMAIL, (deletedEmail) => {
