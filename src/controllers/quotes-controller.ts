@@ -72,7 +72,7 @@ export const addQuote = async (req: RequestBody<QuoteModel>, res: Response) => {
 
 export const deleteQuote = async (req: QueryId, res: Response) => {
   try {
-    if (validId(req.query.id)) {
+    if (!validId(req.query.id)) {
       return res.status(422).json({ message: 'Enter valid id' })
     }
 
