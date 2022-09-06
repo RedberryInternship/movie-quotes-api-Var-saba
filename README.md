@@ -2,9 +2,9 @@
 
 Using the API you can do CRUD operations on quotes, movies and application users
 
-API base uri: movie-quotes-api.sabavar.redberryinternship.ge
-API documentation: movie-quotes-api.sabavar.redberryinternship.ge/api-docs
-Movie Quotes production uri: movie-quotes.sabavar.redberryinternship.ge
+API base uri: https://movie-quotes-api.sabavar.redberryinternship.ge
+API documentation: https://movie-quotes-api.sabavar.redberryinternship.ge/api-docs
+Movie Quotes production uri: https://movie-quotes.sabavar.redberryinternship.ge
 
 #
 
