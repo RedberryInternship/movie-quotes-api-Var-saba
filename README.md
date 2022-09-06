@@ -1,10 +1,10 @@
 ### API for Movie Quotes
 
-Using the API you can do CRUD operations on quotes, movies and application users
+Using the API you can do CRUD operations on quotes, movies and application users.
 
-API base uri: https://movie-quotes-api.sabavar.redberryinternship.ge
-API documentation: https://movie-quotes-api.sabavar.redberryinternship.ge/api-docs
-Movie Quotes production uri: https://movie-quotes.sabavar.redberryinternship.ge
+- <p>API base uri: <a href="https://movie-quotes-api.sabavar.redberryinternship.ge" target="_blank">movie-quotes-api.sabavar.redberryinternship.ge</a></p>
+- <p>API documentation: <a href="https://movie-quotes-api.sabavar.redberryinternship.ge/api-docs" target="_blank">movie-quotes-api.sabavar.redberryinternship.ge/api-docs</a></p>
+- <p>Movie Quotes production uri: <a href="https://movie-quotes.sabavar.redberryinternship.ge" target="_blank">movie-quotes.sabavar.redberryinternship.ge</a></p>
 
 #
 
