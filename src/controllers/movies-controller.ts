@@ -11,7 +11,6 @@ export const getMovieGenres = async (_, res: Response) => {
     'Musicals',
     'Romance',
     'Fantasy',
-    'Romance',
     'Mystery',
     'Action',
     'Comedy',
