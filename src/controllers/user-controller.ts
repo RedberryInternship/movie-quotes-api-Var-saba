@@ -188,6 +188,14 @@ export const addSecondaryEmail = async (
         .json({ message: 'Provided email address is already added' })
     }
 
+    const usersWithSameEmail = await User.find({ email })
+
+    if (usersWithSameEmail.length !== 0) {
+      return res
+        .status(409)
+        .json({ message: 'Provided email address is taken' })
+    }
+
     await existingUser.update({
       $push: {
         secondaryEmails: {
