@@ -6,6 +6,7 @@ import { User } from 'models'
 import bcrypt from 'bcryptjs'
 import {
   RegisterGoogleMemberReq,
+  VerifyUserEmailQuery,
   EmailActivationReq,
   RegisterMemberReq,
   NewEmailReq,
@@ -134,11 +135,11 @@ export const userAccountActivation = async (
 }
 
 export const verifyUserEmail = async (
-  req: RequestQuery<Email>,
+  req: RequestQuery<VerifyUserEmailQuery>,
   res: Response
 ) => {
   try {
-    const { email } = req.query
+    const { email, type } = req.query
 
     if (!validEmail(email)) {
       return res.status(422).json({
@@ -149,37 +150,45 @@ export const verifyUserEmail = async (
     const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      if (existingUser.password) {
-        const token = jwt.sign({ email }, process.env.JWT_SECRET!)
-
-        const emailTemp = generateEmail(
-          existingUser.name,
-          'email',
-          `/?emailVerificationToken=${token}&id=${existingUser.id}`
-        )
-
-        if (process.env.SENGRID_API_KEY) {
-          sgMail.setApiKey(process.env.SENGRID_API_KEY)
-        }
-
-        const data = emailData(email, 'email address', emailTemp)
-
-        await sgMail.send(data, false, async (err: any) => {
-          if (err) {
-            return res.status(500).json({
-              message: err.message,
-            })
-          }
-
-          return res.status(200).json({
-            message: 'Email verification link sent. Check your email.',
-          })
+      if (!existingUser.password) {
+        return res.status(200).json({
+          message:
+            "User is registered with google authentication. Can't change google account password.",
         })
       }
 
-      return res.status(200).json({
-        message:
-          "User is registered with google authentication. Can't change google account password.",
+      const token = jwt.sign({ email }, process.env.JWT_SECRET!)
+
+      const resetPassword = type && type === 'password'
+
+      const emailTemp = generateEmail(
+        existingUser.name,
+        resetPassword ? 'password' : 'email',
+        `/?emailVerificationToken=${token}&id=${existingUser.id}`,
+        resetPassword
+      )
+
+      if (process.env.SENGRID_API_KEY) {
+        sgMail.setApiKey(process.env.SENGRID_API_KEY)
+      }
+
+      const data = emailData(
+        email,
+        resetPassword ? 'password' : 'email address',
+        emailTemp,
+        resetPassword
+      )
+
+      await sgMail.send(data, false, async (err: any) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
+          })
+        }
+
+        return res.status(200).json({
+          message: 'Email verification link sent. Check your email.',
+        })
       })
     } else {
       return res.status(404).json({

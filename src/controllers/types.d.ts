@@ -104,3 +104,5 @@ export type SecondaryEmailActivation = {
   secondaryEmailVerificationToken: string
   id: string
 }
+
+export type VerifyUserEmailQuery = { email: string; type?: 'password' }
