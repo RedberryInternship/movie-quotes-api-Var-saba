@@ -50,8 +50,8 @@
 
       <p style="margin-bottom: 24px; color: white">Hola {% user-name %}!</p>
       <p style="margin-bottom: 24px; color: white; margin-bottom: 35px">
-        Thanks for joining Movie quotes! We really appreciate it. Please click
-        the button below to verify your {% verify-object %}:
+        {% new-welcome-text %} Please click the button below to {% action %}
+        your {% verify-object %}:
       </p>
 
       <a
@@ -64,7 +64,7 @@
           border-radius: 4px;
         "
         href="{% uri %}"
-        >Verify {% verify-object %}
+        >{% button-action %} {% verify-object %}
       </a>
 
       <p style="margin-bottom: 16px; color: white; margin-top: 35px">
