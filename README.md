@@ -2,10 +2,6 @@
 
 Using the API you can do CRUD operations on quotes, movies and application users.
 
-- <p>API base uri: <a href="https://movie-quotes-api.sabavar.redberryinternship.ge" target="_blank">movie-quotes-api.sabavar.redberryinternship.ge</a></p>
-- <p>API documentation: <a href="https://movie-quotes-api.sabavar.redberryinternship.ge/api-docs" target="_blank">movie-quotes-api.sabavar.redberryinternship.ge/api-docs</a></p>
-- <p>Movie Quotes production uri: <a href="https://movie-quotes.sabavar.redberryinternship.ge" target="_blank">movie-quotes.sabavar.redberryinternship.ge</a></p>
-
 #
 
 ## Table of Contents
@@ -55,7 +51,7 @@ Using the API you can do CRUD operations on quotes, movies and application users
 1\. First of all you need to clone repository from github:
 
 ```sh
-git clone https://github.com/RedberryInternship/movie-quotes-api-Var-saba.git
+git clone https://github.com/Saba-Var/movie-quotes-api-Var-saba.git
 ```
 
 2\. Navigate to the repository
