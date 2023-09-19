@@ -6,12 +6,18 @@ Using the API you can do CRUD operations on quotes, movies and application users
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Prerequisites](#prerequisites)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Resources](#resources)
+- [](#)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+- [](#-1)
+  - [Tech Stack](#tech-stack)
+- [](#-2)
+  - [Getting Started](#getting-started)
+- [](#-3)
+- [](#-4)
+  - [Project Structure](#project-structure)
+- [](#-5)
+  - [Resources](#resources)
 
 ## Prerequisites
 
@@ -51,7 +57,7 @@ Using the API you can do CRUD operations on quotes, movies and application users
 1\. First of all you need to clone repository from github:
 
 ```sh
-git clone https://github.com/Saba-Var/movie-quotes-api-Var-saba.git
+git clone https://github.com/Saba-Var/Movie-Quotes-api.git
 ```
 
 2\. Navigate to the repository
